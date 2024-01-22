@@ -4,12 +4,34 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/style.css" />
-    <title>test</title>
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
+
   <body>
-    <h1>The test Github</h1>
-    <canvas height='320' width='480' id='canvas'>Ok</canvas>
-    <script src="/script.js"></script>
+    <div class="conteiner">
+      <div id="fon">
+        <!-- <div class="finish"></div> -->
+        <!-- <img src="cars/p0.png" width="200" height="100" alt="car" id="p0" /> -->
+        <img src="cars/p1.png" width="200" height="100" alt="car" id="p1" />
+        <img src="cars/p2.png" width="200" height="100" alt="car" id="p2" />
+        <img src="cars/p3.png" width="200" height="100" alt="car" id="p3" />
+        <img src="cars/p4.png" width="200" height="100" alt="car" id="p4" />
+        <div id="iddiv"></div>
+        <input
+          id="add"
+          class="moveBtn"
+          type="button"
+          onclick="go()"
+          value="Start"
+        />
+      </div>
+      <div class="finishImg">
+        <img src="cars/Finish-Line-PNG-HD.png" width="1200" height="200" alt="car" id="p1" />
+        
+      </div>
+    </div>
+    <audio class="audio" src="/sound/music.mp3"></audio>
+    <script src="script.js"></script>
   </body>
 </html>

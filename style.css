@@ -57,12 +57,12 @@ h2 {
     top: 510px;
 }
 
-/* #finish {
+#finish {
     transform: rotate(90deg);
     position: relative;
     float: right;
     text-align: right;
-} */
+}
 
 .finishImg {
     display: flex;

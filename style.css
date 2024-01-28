@@ -58,10 +58,9 @@ h2 {
 }
 
 #finish {
-    transform: rotate(90deg);
+    transform: rotate(180deg);
     position: relative;
-    float: right;
-    text-align: right;
+    
 }
 
 .finishImg {

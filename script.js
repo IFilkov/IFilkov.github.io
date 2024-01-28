@@ -20,7 +20,7 @@ document.getElementById('p1').style.transform = 'rotateY(10deg)';
 document.getElementById('p2').style.transform = 'rotateY(10deg)';
 document.getElementById('p3').style.transform = 'rotateY(10deg)';
 document.getElementById('p4').style.transform = 'rotateY(10deg)';
-// document.getElementById('finish').style.marginLeft = '600px';
+document.getElementById('finish').style.marginLeft = '600px';
 
 // let wiew = VisualViewport;
 

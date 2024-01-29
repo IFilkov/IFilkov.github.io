@@ -32,16 +32,16 @@ h2 {
     /* transform: rotate(180deg); */
     transform:scale(-1);
     width: 9em;
-    height: 10em;
+    height: 8em;
     z-index: 1000;
 
     /* left: 1300px; */
 }
 
 #p1 {top: 4em;} 
-#p2 {top:10em;} 
-#p3 {top:30em;} 
-#p4 {top:40em;} 
+#p2 {top:14em;} 
+#p3 {top:24em;} 
+#p4 {top:34em;} 
 
 
 

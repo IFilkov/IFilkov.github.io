@@ -31,6 +31,9 @@ h2 {
     position: absolute;
     /* transform: rotate(180deg); */
     transform:scale(-1);
+    top: 4em;
+    width: 9em;
+    height: 10em;
     z-index: 1000;
 
     /* left: 1300px; */
@@ -41,24 +44,7 @@ h2 {
     bottom: 0px;
 } */
 
-#p1 {
-    top: 5px;
-    width: 8em;
-    height: 6em;
-} 
 
-
-#p2 {
-    top: 200px;
-}
-
-#p3 {
-    top: 350px;
-}
-
-#p4 {
-    top: 510px;
-}
 
 #finish {
     transform: rotate(180deg);

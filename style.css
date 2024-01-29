@@ -32,7 +32,7 @@ h2 {
     /* transform: rotate(180deg); */
     transform:scale(-1);
     width: 9em;
-    height: 8em;
+    height: 6em;
     z-index: 1000;
 
     /* left: 1300px; */

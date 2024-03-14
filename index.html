@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -31,4 +31,17 @@
         <!-- Ваш контент здесь -->
     </main>
 </body>
+<script> 
+let burgerMenu = document.querySelector('.burger-menu'); // выбираем элемент бургер-меню
+let menu = document.querySelector('.menu'); // выбираем меню
+
+burgerMenu.addEventListener('click', function() { // добавляем обработчик событий на клик по бургер-меню
+    if (menu.style.display === 'none') { // если меню скрыто
+        menu.style.display = 'block'; // показываем меню
+    } else { // если меню открыто
+        menu.style.display = 'none'; // скрываем меню
+    }
+});
+
+</script>
 </html>

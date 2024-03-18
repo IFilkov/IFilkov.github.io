@@ -1,32 +1,138 @@
-header {
-    background-color: #333;
-    padding: 10px;
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
-nav ul {
+nav {
+  background-color: #333;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.burger-menu {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.line {
+  width: 25px;
+  height: 3px;
+  background-color: #fff;
+  margin: 3px 0;
+}
+
+.menu {
+  list-style: none;
+  display: flex;
+}
+
+.menu li {
+  margin-right: 20px;
+}
+
+.menu li:last-child {
+  margin-right: 0;
+}
+
+.menu li a {
+  text-decoration: none;
+  color: #fff;
+}
+
+.section {
+  padding: 20px;
+}
+
+.container {
+  position: relative;
+  overflow: hidden;
+}
+
+.placeholder {
+  height: 100%;
+  width: 20%;
+  position: absolute;
+  left: -20%;
+}
+
+img {
+  width: 100%;
+  display: block;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  /* left: -100%; */
+  right: -100%;
+  /* начальное положение за левым краем экрана */
+  width: 50%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  /* transition: left 0.5s ease; */
+  transition: right 0.5s ease;
+  /* анимация сглаженного движения */
+}
+
+.overlay.active {
+  /* left: 0; */
+  right: 0;
+  /* конечное положение - выезжает вправо */
+}
+
+.overlay.about {
+  background-color: rgba(255, 0, 0, 0.5);
+  /* красный цвет для секции О нас */
+}
+
+.overlay.events {
+  background-color: rgba(0,
+      255,
+      0,
+      0.5);
+  /* зеленый цвет для секции мероприятия */
+}
+
+.overlay.jobs {
+  background-color: rgba(0, 0, 255, 0.5);
+  /* синий цвет для секции подработка */
+}
+
+.overlay.contact {
+  background-color: rgba(255,
+      255,
+      0,
+      0.5);
+  /* желтый цвет для секции контакты */
+}
+
+@media (max-width: 600px) {
+  .burger-menu {
     display: flex;
-    justify-content: space-between;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
+  }
 
-nav ul li {
-    padding: 10px;
-}
+  .menu {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    padding: 10px 0;
+  }
 
-nav ul li a {
-    text-decoration: none;
-    color: #fff;
-}
+  .menu.active {
+    display: flex;
+  }
 
-@media screen and (max-width: 500px) {
-    nav ul {
-        flex-direction: column;
-    }
-
-    nav ul li {
-        display: block;
-        width: 100%;
-    }
+  .menu li {
+    margin: 10px 0;
+  }
 }

@@ -1,227 +1,645 @@
+<!-- текущий код -->
+<!-- структурированный код, мультиввод -->
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scroll Effect</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    #canvas {
+      background-color: #f8f8f8;
+      display: block;
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+
+    }
+  </style>
 </head>
 
 <body>
-  <div class="container">
-    <nav>
-      <div>LOGO</div>
-      <div class="burger-menu">
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-      </div>
-      <ul class="menu">
-        <li><a href="#about">О нас</a></li>
-        <li><a href="#events">Мероприятия</a></li>
-        <li><a href="#jobs">Подработка</a></li>
-        <li><a href="#contacts">Контакты</a></li>
-      </ul>
-    </nav>
-    <div id="about" class="section">
-      <h2>О нас</h2>
-      <h3>
-        Добро пожаловать на сайт нашей волонтерской организации! Мы существуем
-        уже более 10 лет и за это время успели собрать более 10000 волонтеров,
-        которые активно участвуют в различных мероприятиях и проектах. Наша
-        организация - это место, где каждый может найти свое призвание и
-        внести свой вклад в общество. Мы предлагаем широкий спектр
-        мероприятий, которые охватывают самые разные сферы жизни. Наши
-        волонтеры помогают в проведении благотворительных акций, организуют
-        спортивные мероприятия, участвуют в экологических проектах и многое
-        другое. Мы гордимся тем, что наша организация объединяет людей разных
-        возрастов, профессий и интересов. Каждый наш волонтер - это уникальная
-        личность со своими талантами и способностями. Мы верим, что вместе мы
-        можем сделать мир лучше и помочь тем, кто нуждается в нашей помощи.
-        Если вы хотите стать частью нашей команды или просто узнать больше о
-        нашей работе, пожалуйста, свяжитесь с нами. Мы всегда рады новым
-        участникам и готовы ответить на все ваши вопросы. Спасибо за интерес к
-        нашей организации!
-      </h3>
-    </div>
-    <div id="events" class="section">
-      <h2>Мероприятия</h2>
-      <h3>
-        Мероприятия нашей волонтерской организации - это уникальная
-        возможность для каждого человека проявить себя и внести свой вклад в
-        общество. Мы предлагаем широкий спектр мероприятий, которые охватывают
-        самые разные сферы жизни. Одним из наших основных направлений является
-        проведение благотворительных акций. Мы организуем сбор средств для
-        нуждающихся, помогаем детским домам и приютам для животных. Наши
-        волонтеры активно участвуют в организации благотворительных концертов,
-        ярмарок и других мероприятий, которые помогают собрать необходимые
-        средства. Мы также уделяем большое внимание спортивным мероприятиям.
-        Мы организуем марафоны, забеги, турниры по различным видам спорта.
-        Наши волонтеры помогают в организации соревнований, подготовке
-        спортивных площадок и многом другом. Одним из важных направлений нашей
-        работы является экологическое просвещение. Мы проводим акции по уборке
-        территорий, организуем экологические фестивали и выставки. Наши
-        волонтеры активно участвуют в посадке деревьев, сборе мусора и других
-        мероприятиях, направленных на сохранение окружающей среды. Мы также
-        организуем культурные мероприятия. Мы проводим фестивали, концерты,
-        выставки и другие мероприятия, которые помогают людям познакомиться с
-        культурой разных стран и народов. Наши волонтеры помогают в
-        организации мероприятий, подготовке декораций и многом другом. Мы
-        также уделяем большое внимание образовательным мероприятиям. Мы
-        проводим лекции, семинары, тренинги и другие мероприятия, которые
-        помогают людям получить новые знания и навыки. Наши волонтеры помогают
-        в организации мероприятий, подготовке материалов и многом другом. Мы
-        гордимся тем, что наша организация объединяет людей разных возрастов,
-        профессий и интересов. Каждый наш волонтер - это уникальная личность
-        со своими талантами и способностями. Мы верим, что вместе мы можем
-        сделать мир лучше и помочь тем, кто нуждается в нашей помощи. Если вы
-        хотите стать частью нашей команды или просто узнать больше о нашей
-        работе, пожалуйста, свяжитесь с нами. Мы всегда рады новым участникам
-        и готовы ответить на все ваши вопросы. Спасибо за интерес к нашей
-        организации!
-      </h3>
-    </div>
-    <div id="jobs" class="section">
-      <h2>Подработка</h2>
-      <p>Информация о подработке.</p>
-      <h3>Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui provident nostrum dolorem harum id fugit fuga
-        incidunt aut vel! Exercitationem incidunt sit veniam expedita! Tempora qui repellat, debitis mollitia,
-        praesentium est totam necessitatibus possimus eos corrupti unde expedita molestias velit? Hic deserunt similique
-        quia, voluptas incidunt in iste adipisci, aperiam natus, veniam quos repellendus dolor repellat sed harum earum
-        laudantium obcaecati molestias explicabo blanditiis ipsum praesentium molestiae suscipit debitis! Nisi provident
-        quaerat quae reprehenderit, obcaecati maiores eum sint accusantium at quas sequi aut quidem reiciendis in beatae
-        doloremque molestias consequatur voluptatem voluptatum facere. Similique dolorum doloremque hic aperiam
-        temporibus nam dolores labore cupiditate veniam nemo exercitationem voluptatum quis natus facilis laudantium
-        asperiores facere, deserunt minus voluptas doloribus sit vel! Maiores nulla debitis, eveniet cupiditate
-        consectetur voluptates quia sequi possimus eius in delectus dolor quidem quisquam labore reprehenderit
-        temporibus ut molestias dolorum. Quod repudiandae neque nisi ipsam dolore iusto suscipit optio fugit facere fuga
-        nobis minus accusamus minima aspernatur at provident, corporis soluta voluptates deleniti recusandae atque
-        numquam velit, natus quas? Ex at facere, eveniet laborum temporibus sunt. Veritatis et, quaerat porro ad vitae
-        esse aliquid ipsa atque recusandae cum magnam nostrum soluta accusantium nam sapiente, hic ex nisi expedita
-        quam. Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem delectus ratione debitis blanditiis velit
-        doloremque in voluptate deleniti qui rem nulla temporibus eveniet consectetur necessitatibus ipsam dicta,
-        laboriosam inventore eligendi aliquam vero quo quas. Vitae esse, maxime qui quam hic consequuntur laboriosam eos
-        porro eaque rerum, adipisci quisquam iste accusamus pariatur! Odit obcaecati nisi magni pariatur id! Ipsum ad
-        corrupti possimus libero natus laboriosam. Amet sequi, beatae soluta accusantium cumque corporis recusandae
-        fuga, nesciunt, totam ex esse hic consectetur? Omnis, facere asperiores quia nemo obcaecati mollitia officiis
-        fugit voluptates atque sapiente! Possimus, maiores iste. Sequi ipsa exercitationem officia soluta maxime,
-        excepturi deserunt eum perferendis aliquid amet harum a officiis dolorem nobis nemo dignissimos enim eveniet
-        necessitatibus magni ratione obcaecati pariatur odio quisquam! Mollitia illo ipsa error suscipit modi unde eaque
-        reiciendis. Possimus minus quia repellat aspernatur nesciunt aut, pariatur qui iste ab laborum error ex, tenetur
-        blanditiis consequatur, explicabo magnam ipsum. Eveniet quos nemo pariatur quis repellendus voluptatibus
-        temporibus eos, consequuntur labore saepe suscipit error fugit et fugiat voluptatem tempore iste facere, animi
-        adipisci? Harum omnis totam ipsa saepe eligendi modi, animi sed, veniam laborum deserunt quidem, magnam ex
-        consectetur sit pariatur repellendus est provident obcaecati. Dolorum quia optio consequuntur nisi accusantium
-        totam, ex, reprehenderit dolorem eius sequi rem ipsa porro illo architecto debitis beatae? Molestiae maxime
-        optio laboriosam nulla, distinctio mollitia hic eveniet architecto aliquam doloribus aut obcaecati incidunt
-        maiores, laudantium quaerat adipisci error ut minus? Dolorum esse aut ex vel quia quae culpa earum voluptatibus
-        labore, sit perspiciatis voluptate obcaecati blanditiis debitis quos reprehenderit, asperiores suscipit
-        voluptatum error sapiente accusamus pariatur modi commodi. Voluptate dignissimos asperiores blanditiis dolores
-        deleniti, nemo, qui repudiandae necessitatibus, quia magni vel labore quo quos! Aliquam praesentium cumque quia
-        ut labore temporibus, dolorum quam tempore deserunt iure sunt, placeat molestias porro dolores autem odit
-        aperiam nihil ad molestiae vitae fugit doloribus ratione odio. Aspernatur repellat, obcaecati nam, corrupti
-        reprehenderit officia impedit ea dolore quaerat at pariatur minus ad accusantium, id consequuntur eum saepe
-        sequi non. Nostrum dicta, voluptatum nisi architecto neque accusamus suscipit, eius velit quas eos iure dolorem
-        voluptatem, animi ut? Excepturi vero quo quas unde veritatis, nulla saepe assumenda quae dicta nam maxime.
-        Eveniet architecto dolore dolorum porro. Reiciendis sunt libero laborum voluptatum eum porro nobis veniam quam
-        excepturi, velit harum! Praesentium qui tempora vitae soluta assumenda quo fugit ipsa necessitatibus quos?
-        Tempora fuga dolorem eos suscipit. Temporibus quae inventore necessitatibus sequi.</h3>
-    </div>
-    <div id="contacts" class="section">
-      <h2>Контакты</h2>
-      <p>Как с нами связаться.</p>
-      <h3>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reiciendis, optio asperiores. Unde, quisquam
-        reprehenderit dolorem reiciendis explicabo omnis! Fugiat aliquid accusamus in nesciunt voluptates, modi, hic,
-        veniam doloribus eos error non quas omnis ex magni nemo blanditiis. Vel soluta tenetur, commodi quos modi, qui
-        aperiam hic velit adipisci officiis, labore dignissimos praesentium iure! Officiis repellat ex enim illum
-        assumenda temporibus laboriosam nobis aliquam quo nulla maiores hic, nostrum, debitis praesentium et a iusto.
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Id, exercitationem non minus odit reiciendis quis
-        fugit. Iste enim totam cupiditate earum quibusdam nobis animi voluptatem repellendus corporis non? Asperiores,
-        corrupti porro. Quasi repellendus, vero quibusdam totam ipsam ratione ducimus nesciunt deserunt labore placeat
-        minima quia porro consequuntur, quidem fuga perspiciatis aliquid ea error enim doloremque ad, illo reprehenderit
-        eligendi hic. Adipisci, architecto culpa. Possimus minima pariatur aliquam in nulla quibusdam labore
-        voluptatibus placeat, maxime reprehenderit quod eveniet, fugit autem atque sit, asperiores ullam. Dolores,
-        assumenda. Consectetur iste est eum incidunt accusantium nostrum delectus eaque odio illum ex quia rerum
-        voluptatum, provident nobis consequatur harum ipsa aut impedit dolore? Voluptatibus, ullam deserunt. Nobis sint
-        facilis aperiam magni porro nesciunt numquam, veniam quos mollitia quaerat necessitatibus molestias nihil
-        debitis iste? Quisquam excepturi nisi eos! Error omnis voluptates, aliquid suscipit sunt fugit fugiat molestiae
-        corporis voluptatibus obcaecati maxime modi architecto dolor ab laborum pariatur vitae accusantium a earum
-        recusandae. Eum, reiciendis quod harum dolores suscipit voluptates inventore molestias est dignissimos. Neque
-        nulla ex quas quae? Porro accusantium alias, corporis culpa sunt, est doloremque et in, incidunt iure numquam.
-        Fugiat atque voluptatem saepe quas dolor asperiores? Rerum, sunt dolore? Numquam, voluptatum illo. Cumque
-        eveniet facere deserunt necessitatibus quas atque culpa labore optio odio voluptas? Aliquid voluptatem vero
-        dolores ipsum minima quo vitae totam blanditiis facere ea nobis veritatis officia modi, eveniet quos enim
-        pariatur perferendis ex labore! Dignissimos alias deserunt, eveniet sed impedit soluta dolorum nulla repellat
-        blanditiis modi fugiat similique sequi eum nostrum assumenda nesciunt explicabo consectetur reiciendis totam
-        aliquid, repudiandae eligendi optio minima! Quasi asperiores voluptatum culpa quos assumenda illo excepturi!
-        Perspiciatis tempora quasi alias harum fugiat quae distinctio sunt fuga aperiam nesciunt modi nemo ad, quis
-        nostrum tenetur animi ut nobis. Iusto laudantium similique, qui veritatis officia at, deleniti soluta eveniet,
-        amet magnam ratione? Eos dolorum harum, illo libero sed sint repudiandae ipsam molestiae. Consequatur et
-        cupiditate nesciunt maiores voluptatum fugiat doloremque, rerum sit aliquid, commodi itaque quo ipsum voluptas
-        pariatur corporis tempore laboriosam unde, porro officiis voluptatibus molestias vitae at dignissimos qui. Esse
-        suscipit incidunt accusamus, impedit, recusandae quos numquam id tempora porro aut sed officiis labore laborum
-        accusantium ad corporis tenetur sit doloribus est iure! Temporibus qui fuga odio ullam molestias amet. Totam
-        iusto ipsum expedita nobis libero quibusdam incidunt, mollitia architecto doloribus maiores tenetur labore
-        aliquam nulla rem molestiae asperiores fugit, dignissimos facilis placeat natus aspernatur minus ut hic. Placeat
-        in asperiores et cum totam nulla aut ullam. Consequatur hic animi libero? Provident, modi tempora nostrum esse
-        dignissimos ullam, id totam et dolorem delectus eveniet iusto tempore ipsam quisquam porro voluptatem! Quo esse
-        sed voluptatum consequuntur, eveniet eos error, odio harum modi vero accusamus impedit voluptatem!
-        Necessitatibus soluta sequi accusamus dolore a exercitationem veniam natus quo veritatis velit? Nesciunt, omnis
-        in. Laudantium tenetur exercitationem suscipit debitis tempore totam hic eius at? Assumenda quasi placeat natus,
-        aliquam illum quia, voluptate doloremque sapiente commodi, minus nemo iure voluptatibus. Necessitatibus iusto
-        velit quibusdam. Vitae iure laborum voluptatem a. Praesentium iure atque adipisci a at molestiae, quod magni est
-        culpa quia eligendi quibusdam repellat quasi rem possimus exercitationem libero in laborum doloribus eveniet
-        dolorum, deserunt unde! Maiores nam at exercitationem incidunt, eos consectetur provident corporis eum ullam
-        fugiat laborum porro qui distinctio rerum obcaecati laboriosam non officiis consequuntur numquam? Quos, harum
-        pariatur corrupti commodi, impedit maiores eum atque tempore, ipsa nemo nihil dolorum quis quae vitae
-        dignissimos iure quo. Suscipit, ratione laudantium! Debitis voluptatibus repellat architecto iste vitae non
-        corrupti voluptates deleniti vero mollitia natus consectetur, perferendis nihil quaerat perspiciatis incidunt,
-        voluptatem fuga eum magnam odio nemo modi rem. Consequatur dolore atque explicabo cumque consectetur nisi dicta
-        eveniet assumenda esse. Fuga inventore repellendus ipsum autem vel corrupti id consequatur. Similique at odit
-        eos placeat cumque accusamus dolores eveniet sint perspiciatis? Ab suscipit nostrum amet illum possimus, eius
-        asperiores quis cupiditate magni nemo numquam quibusdam porro vitae dolor voluptate obcaecati in optio
-        perferendis! Soluta vel perspiciatis dicta placeat eveniet, provident rem quam, odit at animi tempora officiis?
-        Consectetur nesciunt quia natus ipsum facilis in non minima consequatur nisi nemo delectus accusantium aperiam
-        fuga mollitia ex iusto dolores suscipit quaerat iure, aliquam soluta. Cum illo, blanditiis et iure, id dolores
-        non, quae ipsum nemo doloribus sit quia tempore pariatur numquam voluptatum deleniti! Modi nesciunt iusto quis
-        deserunt sed accusantium quaerat, sit exercitationem molestias vero sequi? Impedit hic veritatis saepe tempore
-        quam pariatur repellendus non minus, quas deleniti odit nobis accusamus autem deserunt, quis beatae ipsum in.
-        Architecto voluptates voluptatum excepturi pariatur officia quam natus, cupiditate fugit incidunt! Consequuntur
-        iusto molestiae dicta ex nulla, enim blanditiis ratione reprehenderit, quas aliquid eum nihil nesciunt,
-        laboriosam dignissimos magni perspiciatis. Sunt ab fuga porro animi quibusdam quo est inventore magni. Quaerat
-        doloremque deleniti quae architecto sequi, laborum, obcaecati vel eaque autem dolorem odio ut consectetur fugiat
-        ab eius molestiae pariatur quia esse sint laboriosam illum delectus. Dolorum odio, perferendis facilis tenetur
-        sapiente natus, dolores libero dolorem corrupti voluptatibus enim neque ullam a explicabo. Similique quidem sunt
-        nisi, veritatis accusamus, cumque doloribus corrupti possimus, veniam quam modi tenetur rerum illo blanditiis
-        beatae nostrum aspernatur molestias praesentium! Minus beatae maiores numquam culpa. Maiores labore eveniet
-        sequi officia nobis? Molestias voluptas odio ipsum vel, cum consequuntur reprehenderit necessitatibus
-        perspiciatis corporis unde blanditiis culpa neque quis nostrum laborum placeat fugit error nobis rerum quas?
-        Consectetur, iusto cupiditate blanditiis laudantium odio beatae magnam eum mollitia pariatur dolor eius saepe,
-        aspernatur debitis rem sint! Commodi, sapiente explicabo, eveniet molestiae cupiditate quasi corporis illo eius
-        fugit dolore illum nostrum quibusdam reiciendis natus omnis perspiciatis in quod quo minus laudantium? Eius
-        voluptatum consequatur architecto illo natus. Quos animi minus fuga accusantium dicta, rem, debitis libero,
-        nulla odio ab qui obcaecati asperiores illum adipisci quaerat inventore illo harum iure soluta expedita esse
-        natus distinctio quasi? Molestiae, ea! Sequi iste hic odit ducimus minus nemo laudantium voluptatum voluptatibus
-        sint ullam consectetur, nulla tenetur. Praesentium nostrum ea at omnis facilis cumque exercitationem nisi dicta
-        provident error excepturi, maxime adipisci esse officia iste illum expedita quia, sunt quidem aliquid atque.
-      </h3>
-    </div>
-    <div class="placeholder"></div>
-  </div>
-  <div class="overlay about">
-    <h2>About</h2>
-  </div>
-  <div class="overlay events">
-    <h2>Events</h2>
-  </div>
-  <div class="overlay jobs">
-    <h2>Jobs</h2>
-  </div>
-  <div class="overlay contact">
-    <h2>Contact</h2>
-  </div>
-  <script src="script.js"></script>
+  <canvas id="canvas" width="800" height="600"></canvas>
+
+  <script>
+    let canvas = document.getElementById("canvas");
+    let ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', function () {
+      resizeCanvas();
+    });
+
+    // Вызовите resizeCanvas() один раз при загрузке страницы
+    resizeCanvas();
+
+    let keysPressed = {};
+    let seats = new Array(200).fill(false);
+    let spectators = [];
+
+    let hero = {
+      x: canvas.width - 245,
+      y: 350,
+      radius: 8,
+      speed: 2,
+    };
+
+    let enemy = null;
+    let enemy2 = null;
+
+    function createEnemy() {
+      enemy = {
+        x: 250,
+        y: 250,
+        radius: 8,
+        speed: 1.5,
+        color: "#000000",
+      };
+    }
+
+    function createEnemy2() {
+      enemy2 = {
+        x: 150,
+        y: 150,
+        radius: 8,
+        speed: 2.5,
+        color: "#FF0000",
+      };
+    }
+
+    function drawSeats(startX, startY, rows, cols) {
+      let seatWidth = 15;
+      let seatHeight = 15;
+      let seatGap = 5; // Промежуток между сидениями
+      let rowGap = seatHeight; // Промежуток между рядами
+
+      for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+          if (!seats[i * cols + j]) {
+            ctx.fillStyle = "#c0c0c0";
+          } else {
+            ctx.fillStyle = "#006400";
+          }
+          let x = startX + j * (seatWidth + seatGap);
+          let y = startY + i * (seatHeight + seatGap + rowGap);
+          ctx.fillRect(x, y, seatWidth, seatHeight);
+        }
+      }
+    }
+
+    function findFreeSeat() {
+      const availableSeatsIndices = seats
+        .map((taken, index) => ({ taken, index }))
+        .filter((seat) => !seat.taken)
+        .map((seat) => seat.index);
+
+      if (availableSeatsIndices.length === 0) {
+        return -1; // Если свободных мест нет, возвращаем -1
+      }
+
+      // Возвращаем случайный индекс из списка свободных мест
+      const randomIndex = Math.floor(
+        Math.random() * availableSeatsIndices.length
+      );
+      return availableSeatsIndices[randomIndex];
+    }
+
+    function drawStage(x, y, width, height) {
+      ctx.fillStyle = "#444444";
+      ctx.fillRect(x, y, width, height);
+    }
+
+    function drawEntrance(x, y, width, height) {
+      ctx.fillStyle = "#778899";
+      ctx.fillRect(x, y, width, height);
+    }
+
+    function drawSpectators() {
+      spectators.forEach((spectator) => {
+        ctx.fillStyle = spectator.color;
+        ctx.beginPath();
+        ctx.arc(
+          spectator.x,
+          spectator.y,
+          spectator.radius,
+          0,
+          Math.PI * 2,
+          true
+        );
+        ctx.fill();
+      });
+    }
+
+    function drawHero() {
+      ctx.fillStyle = "#0000FF";
+      ctx.beginPath();
+      ctx.arc(hero.x, hero.y, hero.radius, 0, Math.PI * 2, true);
+      ctx.fill();
+    }
+
+    function drawEnemy() {
+      if (enemy) {
+        ctx.fillStyle = enemy.color;
+        ctx.beginPath();
+        ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function drawEnemy2() {
+      if (enemy2) {
+        ctx.fillStyle = enemy2.color;
+        ctx.beginPath();
+        ctx.arc(enemy2.x, enemy2.y, enemy2.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    let potentialSpectators = []; // Массив для зрителей, ожидающих появления
+    let spectatorInterval; // Будем хранить ссылку на интервал
+    let spectatorIdCounter = 0; // Счетчик для уникальных идентификаторов зрителей
+
+    function initializeSpectators() {
+      let entranceX = canvas.width - 20;
+
+      let upperEntranceY = 250; // Высота на холсте для верхнего входа.
+      let lowerEntranceY = canvas.height - 60; // Высота на холсте для нижнего входа.
+      // Инициализируем потенциальных зрителей
+
+      if (findFreeSeat() !== -1) {
+        for (let i = 0; i < 180; i++) {
+          let y = i % 2 === 0 ? upperEntranceY : lowerEntranceY;
+          potentialSpectators.push({
+            id: spectatorIdCounter++,
+            x: entranceX,
+            y: y,
+            radius: 8,
+            color: "orange",
+            speed: Math.random() * 2 + 1,
+            targetSeat: -1,
+            isSeated: false,
+          });
+        }
+      } else {
+        console.log("Все места заняты, новые зрители не добавлены.");
+      }
+
+      // Настройка интервала для добавления зрителей на сцену
+      if (spectatorInterval) {
+        clearInterval(spectatorInterval); // Сброс существующего интервала, если он есть
+      }
+      spectatorInterval = setInterval(() => {
+        if (potentialSpectators.length > 0) {
+          let nextSpectator = potentialSpectators.shift(); // Извлекаем следующего зрителя
+
+          // Устанавливаем цель для зрителя только тогда, когда он появляется
+          nextSpectator.targetSeat = findFreeSeat();
+          spectators.push(nextSpectator); // Добавляем зрителя в активные
+        } else {
+          clearInterval(spectatorInterval); // Отменяем интервал, если зрители закончились
+        }
+      }, 1000); // Добавляем нового зрителя каждую секунду
+    }
+
+    function drawScene() {
+      // Отрисовка фона и других элементов сцены
+      // drawStage(100, 50, 600, 100);
+      // drawSeats(100, 200, 10, 20);
+      // drawEntrance(canvas.width - 30, 250, 15, 35); // Верхний вход
+      // drawEntrance(canvas.width - 30, canvas.height - 50, 15, 35); // Нижний вход
+      drawStage(canvas.width * 0.125, canvas.height * 0.083, canvas.width * 0.75, canvas.height * 0.166);
+      drawSeats(canvas.width * 0.125, canvas.height * 0.333, 10, 20);
+      drawEntrance(canvas.width * 0.938, canvas.height * 0.208, canvas.width * 0.019, canvas.height * 0.058); // Верхний вход
+      drawEntrance(canvas.width * 0.938, canvas.height * 0.833, canvas.width * 0.019, canvas.height * 0.058); // Нижний вход
+
+
+      // Отрисовка зрителей
+      drawSpectators();
+
+      // Отрисовка героя и врага
+      drawHero();
+      drawEnemy();
+      drawEnemy2();
+
+      // Отрисовка счетчиков и других элементов интерфейса
+      ctx.fillStyle = "#000";
+      ctx.font = "20px Arial";
+      ctx.fillText(`Collided: ${collidedSpectators}`, 10, 20);
+      ctx.fillText(`Non-collided: ${nonCollidedSpectators}`, 10, 40);
+      ctx.fillText(`Hero Collisions: ${heroCollisionCounter}`, 10, 60);
+    }
+
+    function checkCollisionWithHero(spectator) {
+      // Проверяем, пересекается ли зритель с героем
+      let dx = hero.x - spectator.x;
+      let dy = hero.y - spectator.y;
+      let distance = Math.sqrt(dx * dx + dy * dy);
+
+      // Если расстояние между центрами кругов меньше суммы их радиусов, произошла коллизия
+      let isColliding = distance < hero.radius + spectator.radius;
+
+      // Если произошла коллизия, и зритель еще не был отмечен как вошедший в коллизию, увеличиваем счетчик и отмечаем его
+      if (isColliding && !spectator.hasCollided) {
+        spectator.hasCollided = true; // Помечаем зрителя как вошедшего в коллизию
+        return true; // Возвращаем true, чтобы указать, что произошла коллизия
+      }
+
+      return false; // Если коллизии не произошло или зритель уже был отмечен, возвращаем false
+    }
+
+    function checkCollisionWithEnemy(hero, enemy) {
+      let dx = hero.x - enemy.x;
+      let dy = hero.y - enemy.y;
+      let distance = Math.sqrt(dx * dx + dy * dy);
+
+      // Если расстояние между центрами кругов меньше суммы их радиусов, значит, произошла коллизия
+      return distance < hero.radius + enemy.radius;
+    }
+
+    let collidedSpectators = 0;
+    let nonCollidedSpectators = 0;
+    let heroCollisionCounter = 60;
+    let startX = 100; // X координата начала строчки сидений
+    let startY = 200; // Y координата начала строчки сидений
+
+    function updateSpectators() {
+      spectators.forEach((spectator) => {
+        // Обрабатываем только зрителей, которые еще не заняли места
+        if (!spectator.isSeated) {
+          if (spectator.targetSeat === -1) {
+            spectator.targetSeat = findFreeSeat();
+          } else {
+            let seatWidth = 15;
+            let seatHeight = 15;
+            let seatGap = 5; // Промежуток между сидениями
+            let rowGap = seatHeight; // Промежуток между рядами
+
+            let targetRow = Math.floor(spectator.targetSeat / 20);
+            let targetCol = spectator.targetSeat % 20;
+            let targetX = startX + targetCol * (seatWidth + seatGap);
+            let targetY = startY + targetRow * (seatHeight + seatGap + rowGap);
+
+            if (Math.abs(spectator.x - targetX) > spectator.speed) {
+              spectator.x += Math.sign(targetX - spectator.x) * spectator.speed;
+            }
+            if (Math.abs(spectator.y - targetY) > spectator.speed) {
+              spectator.y += Math.sign(targetY - spectator.y) * spectator.speed;
+            }
+            spectator.y += (Math.random() - 0.5) * 5;
+
+            // Условие для проверки, достиг ли зритель своего места
+            if (
+              Math.abs(spectator.x - targetX) < 3 &&
+              Math.abs(spectator.y - targetY) < 3
+            ) {
+              spectator.isSeated = true; // Зритель занимает место
+              seats[spectator.targetSeat] = true; // Место теперь занято
+
+              // Условие для проверки коллизии зрителя и героя при занятии места
+              if (!spectator.hasCollided && checkCollisionWithHero(spectator)) {
+                spectator.color = "green"; // Окрашиваем в зеленый при коллизии
+                spectator.hasCollided = true; // Отмечаем, что коллизия уже была
+                collidedSpectators++; // Увеличиваем счетчик коллизий
+              }
+
+              // Теперь нет повторного увеличения коллизий для зрителей, которые уже вступили в коллизию
+              // Учитываем зрителей, не имеющих коллизий с героем
+              if (!spectator.hasCollided) {
+                nonCollidedSpectators++;
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function updateHeroPosition() {
+      if (keysPressed["ArrowLeft"]) hero.x -= hero.speed;
+      if (keysPressed["ArrowRight"]) hero.x += hero.speed;
+      if (keysPressed["ArrowUp"]) hero.y -= hero.speed;
+      if (keysPressed["ArrowDown"]) hero.y += hero.speed;
+
+      hero.x = Math.max(
+        hero.radius,
+        Math.min(canvas.width - hero.radius, hero.x)
+      );
+      hero.y = Math.max(
+        hero.radius,
+        Math.min(canvas.height - hero.radius, hero.y)
+      );
+      // Проверяем коллизии с врагом
+      if (enemy && checkCollisionWithEnemy(hero, enemy)) {
+        console.log("Ooops!");
+      }
+      // Проверяем коллизию с вторым врагом
+      if (enemy2 && checkCollisionWithEnemy(hero, enemy2)) {
+        console.log("Oops, collided with enemy2!");
+        // Добавьте здесь действия при коллизии с вторым врагом, например, сброс игры или уменьшение очков здоровья героя
+      }
+      // Проверяем коллизии с зрителями
+      spectators.forEach((spectator) => {
+        if (!spectator.isSeated && checkCollisionWithHero(spectator)) {
+          spectator.color = "green"; // При коллизии перекрашиваем зрителя в зеленый
+          collidedSpectators++; // Увеличиваем счетчик вошедших в коллизию зрителей
+        }
+      });
+    }
+
+    function updateHeroPositionTouch() {
+      // Обновляем позицию героя на основе координат касания
+      const dx = touchX - hero.x;
+      const dy = touchY - hero.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const speed = 5; // Скорость перемещения героя
+
+      // Перемещаем героя к координатам касания с определенной скоростью
+      if (distance > speed) {
+        hero.x += (dx / distance) * speed;
+        hero.y += (dy / distance) * speed;
+      } else {
+        // Если расстояние меньше скорости, перемещаем героя непосредственно в точку касания
+        hero.x = touchX;
+        hero.y = touchY;
+      }
+      spectators.forEach((spectator) => {
+        if (!spectator.isSeated && checkCollisionWithHero(spectator)) {
+          spectator.color = "green"; // При коллизии перекрашиваем зрителя в зеленый
+          collidedSpectators++; // Увеличиваем счетчик вошедших в коллизию зрителей
+        }
+      });
+
+      // Ограничиваем позицию героя в пределах холста
+      hero.x = Math.max(hero.radius, Math.min(canvas.width - hero.radius, hero.x));
+      hero.y = Math.max(hero.radius, Math.min(canvas.height - hero.radius, hero.y));
+    }
+
+    function checkCollisionWithSpectators(enemy) {
+      let collidedSpectator = null;
+
+      spectators.forEach((spectator) => {
+        if (!spectator.isSeated) {
+          if (enemy && enemy.x !== undefined && enemy.y !== undefined) {
+            let dx = enemy.x - spectator.x;
+            let dy = enemy.y - spectator.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < enemy.radius + spectator.radius) {
+              collidedSpectator = spectator;
+              return;
+            }
+          }
+        }
+      });
+
+      return collidedSpectator;
+    }
+
+    function updateEnemyPosition() {
+
+      if (!enemy) return; // Если враг не существует, выходим из функции
+
+      // Находим направление к герою
+      let dx = hero.x - enemy.x;
+      let dy = hero.y - enemy.y;
+      let distance = Math.sqrt(dx * dx + dy * dy);
+      let vx = (dx / distance) * enemy.speed;
+      let vy = (dy / distance) * enemy.speed;
+
+      // Обновляем позицию врага, чтобы он преследовал героя
+      enemy.x += vx;
+      enemy.y += vy;
+
+      // Проверяем коллизии только с теми зрителями, которые не окрашены в зеленый цвет.
+      spectators.forEach((spectator) => {
+        if (spectator.color !== "green") {
+          let ex = enemy.x - spectator.x;
+          let ey = enemy.y - spectator.y;
+          let eDistance = Math.sqrt(ex * ex + ey * ey);
+
+          if (eDistance < enemy.radius + spectator.radius) {
+            // Враг столкнулся с зрителем. Столкновение будет обрабатываться здесь.
+            // Так как мы не хотим, чтобы враг взаимодействовал с зрителями в зеленом цвете,
+            // то конкретно в этой проверке ничего делать не нужно.
+          }
+        }
+      });
+    }
+
+    function updateEnemy2Position() {
+      if (!enemy2) return;
+
+      let dx = hero.x - enemy2.x;
+      let dy = hero.y - enemy2.y;
+      let distance = Math.sqrt(dx * dx + dy * dy);
+      let vx = (dx / distance) * enemy2.speed;
+      let vy = (dy / distance) * enemy2.speed;
+
+      enemy2.x += vx;
+      enemy2.y += vy;
+    }
+
+    function startChasingHero() {
+      // console.log("Chasing hero now");
+      if (enemy) {
+        enemy.targetX = hero.x;
+        enemy.targetY = hero.y;
+      }
+    }
+
+    let followingSpectator = null;
+    let timer = null;
+
+    // здесь мы проверяем был ли зритель в коллизии с героем или нет
+    function followSpectator() {
+      if (followingSpectator && followingSpectator.color !== "green") {
+        enemy.x = followingSpectator.x;
+        enemy.y = followingSpectator.y;
+      }
+    }
+
+    function startFollowingTimer() {
+      timer = setTimeout(() => {
+        followingSpectator = null;
+        // Здесь можно добавить код для возвращения к преследованию героя
+        startChasingHero();
+      }, 4000); // 4 секунды
+    }
+
+    function resetGame() {
+      // Сбрасываем все переменные и счетчики в начальное состояние
+      potentialSpectators = [];
+      collidedSpectators = 0;
+      nonCollidedSpectators = 0;
+      heroCollisionCounter = 600; // Возвращаем счетчик коллизий героя с врагом к изначальному значению
+      hero.x = canvas.width - 245; // Возвращаем героя в изначальную позицию
+      hero.y = 350;
+      enemy = null; // Убираем врага с поля
+      enemy2 = null;
+
+      // Очищаем массив сидений
+      seats.fill(false);
+      // seats = new Array(200).fill(false);
+
+      // Удаляем всех зрителей и перезапускаем их генерацию
+      spectators = [];
+      initializeSpectators();
+    }
+
+    function updateHeroCollisionCounter() {
+      if (enemy && checkCollisionWithEnemy(hero, enemy)) {
+        heroCollisionCounter--; // Уменьшаем счетчик при коллизии с врагом
+        if (heroCollisionCounter <= 0) {
+          // Если счетчик достиг нуля или меньше, перезапускаем игру
+          resetGame();
+        }
+      }
+      // Проверяем коллизию с вторым врагом
+      if (enemy2 && checkCollisionWithEnemy(hero, enemy2)) {
+        heroCollisionCounter--; // Уменьшаем счетчик при коллизии с врагом
+        if (heroCollisionCounter <= 0) {
+          // Если счетчик достиг нуля или меньше, перезапускаем игру
+          resetGame();
+        }
+      }
+    }
+
+    function updateGame() {
+      updateSpectators();
+      // updateHeroPositionTouch();
+      // updateHeroPosition();
+      updateEnemyPosition();
+      updateEnemy2Position();
+      updateHeroCollisionCounter();
+
+      // количество пропущеных зрителей после которых выходит охранник
+      if (nonCollidedSpectators >= 2 && !enemy) {
+        createEnemy();
+        console.log("Check!");
+      }
+      if (nonCollidedSpectators >= 4 && !enemy2) {
+        createEnemy2();
+        console.log("Check!");
+      }
+
+      let collidedSpectator = checkCollisionWithSpectators(enemy);
+      if (collidedSpectator !== null) {
+        followingSpectator = collidedSpectator;
+        startFollowingTimer();
+      }
+
+      followSpectator();
+    }
+
+    function updateHero() {
+      if (isTouchDevice()) {
+        updateHeroPositionTouch();
+      } else {
+        updateHeroPosition();
+      }
+    }
+
+    function isTouchDevice() {
+      return "ontouchstart" in window || navigator.maxTouchPoints;
+    }
+
+    let heroMoving = false;
+    let mouseX = 0;
+    let mouseY = 0;
+
+    let movementInterval = null; // Объявляем переменную для хранения интервала движения героя
+
+    function handleMouseInput() {
+      canvas.addEventListener("click", (event) => {
+        const clickX = event.clientX - canvas.getBoundingClientRect().left;
+        const clickY = event.clientY - canvas.getBoundingClientRect().top;
+
+        if (movementInterval) {
+          // Если уже есть активный интервал движения, просто продолжаем его
+          clearInterval(movementInterval);
+        }
+
+        movementInterval = setInterval(() => {
+          const dx = clickX - hero.x;
+          const dy = clickY - hero.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const speed = 22;
+
+          const vx = (dx / distance) * speed;
+          const vy = (dy / distance) * speed;
+
+          hero.x += vx;
+
+          hero.y += vy;
+
+          if (Math.abs(hero.x - clickX) < speed && Math.abs(hero.y - clickY) < speed) {
+            clearInterval(movementInterval);
+            movementInterval = null; // Очищаем переменную, чтобы снова можно было кликнуть и переместить героя
+          }
+        }, 1000 / 60);
+      });
+    }
+    // Обрабатываем тач скрин
+    let touchX = 0;
+    let touchY = 0;
+
+    function handleTouchInput() {
+      canvas.addEventListener("touchstart", function (event) {
+        // Получаем координаты касания
+        touchX = event.touches[0].clientX - canvas.getBoundingClientRect().left;
+        touchY = event.touches[0].clientY - canvas.getBoundingClientRect().top;
+      });
+
+      canvas.addEventListener("touchmove", function (event) {
+        // Получаем координаты касания
+        touchX = event.touches[0].clientX - canvas.getBoundingClientRect().left;
+        touchY = event.touches[0].clientY - canvas.getBoundingClientRect().top;
+      });
+    }
+
+    function handleKeyboardInput() {
+      window.addEventListener("keydown", (e) => {
+        keysPressed[e.key] = true;
+      });
+
+      window.addEventListener("keyup", (e) => {
+        keysPressed[e.key] = false;
+      });
+    }
+
+    function handleInput() {
+      if (isTouchDevice()) {
+        // Для сенсорных устройств
+        handleTouchInput();
+      } else {
+        // Для клавиатуры и мыши
+        handleKeyboardInput();
+        handleMouseInput();
+      }
+
+    }
+
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawScene();
+      updateHero()
+      updateGame();
+      // handleInput();
+      requestAnimationFrame(gameLoop);
+    }
+
+    handleInput();
+    initializeSpectators();
+    requestAnimationFrame(gameLoop);
+  </script>
 </body>
 
 </html>

@@ -482,30 +482,19 @@
           const status = b.hp > 0 ? "Живой" : "Мертвый";
           console.log(`ID: ${b.id}, Очки: ${b.score}, Статус: ${status}`);
         });
-        if (
-          (aliveBalls.length === playerSelectedBalls.length &&
-            aliveBalls.length > 0) ||
-          aliveBalls.length === 1
-        ) {
-          const winner = aliveBalls[0];
-          winnerBall = winner;
 
-          const selectedIds = playerSelectedBalls.map((b) => b.id);
-          const win = selectedIds.includes(winner.id);
+        const onlySelectedAlive = aliveBalls.every((b) => b.selectedByPlayer);
+        const onlyEnemyTeamAlive = aliveBalls.every(
+          (b) => !b.selectedByPlayer && enemyTeamMode
+        );
 
-          endMessage.innerHTML = win
-            ? `🎉 Победа! Ваш шар выжил!<br>ID: ${winner.id}, Очки: ${winner.score}`
-            : `💥 Поражение. Победил чужой шар.<br>ID: ${winner.id}, Очки: ${winner.score}`;
-
-          console.log(
-            "🎯 Выбранные пользователем:",
-            playerSelectedBalls.map((b) => b.id)
-          );
-
+        if (onlySelectedAlive && aliveBalls.length > 0) {
+          console.log("🎉 Победа игрока! Остались только выбранные шары.");
+          gameOver("win");
           showEndScreen();
-        } else if (aliveBalls.length === 0) {
-          endMessage.innerText = "☠️ Никто не выжил. Игра окончена.";
-          console.log("Никто не победил.");
+        } else if (onlyEnemyTeamAlive && aliveBalls.length > 0) {
+          console.log("💀 Поражение! Остались только вражеские шары.");
+          gameOver("lose");
           showEndScreen();
         }
       }
@@ -526,6 +515,23 @@
         } else if (result === "lose") {
           endMessage.innerHTML = `💥 Поражение.`;
           showEndScreen();
+        }
+      }
+
+      function checkVictoryOrDefeat() {
+        const aliveBalls = balls.filter((b) => b.hp > 0);
+
+        const onlySelectedAlive = aliveBalls.every((b) => b.selectedByPlayer);
+        const onlyEnemyTeamAlive = aliveBalls.every(
+          (b) => !b.selectedByPlayer && enemyTeamMode
+        );
+
+        if (onlySelectedAlive && aliveBalls.length > 0) {
+          console.log("🎉 Победа игрока! Остались только выбранные шары.");
+          gameOver("win");
+        } else if (onlyEnemyTeamAlive && aliveBalls.length > 0) {
+          console.log("💀 Поражение! Остались только вражеские шары.");
+          gameOver("lose");
         }
       }
 

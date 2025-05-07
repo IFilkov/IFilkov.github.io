@@ -453,7 +453,11 @@
 
       function handleBallSelection(x, y) {
         if (Date.now() - startTime > 4000) return;
-        if (selectedBalls.length >= 4) return;
+
+        const selectedCount = balls.filter(
+          (b) => b.selectedByPlayer && b.hp > 0
+        ).length;
+        if (selectedCount >= 4) return; // ← теперь строгое ограничение на 4 живых выбранных шара
 
         for (const ball of balls) {
           if (ball.hp <= 0 || ball.selectedByPlayer) continue;
@@ -463,9 +467,8 @@
           const distance = Math.sqrt(dx * dx + dy * dy);
 
           if (distance < ball.radius + 10) {
-            // зона увеличена
             ball.selectedByPlayer = true;
-            selectedBalls.push(ball);
+            selectedBalls.push(ball); // опционально, если используется
             console.log("✅ Выбран шар", ball.id);
             break;
           }
@@ -510,6 +513,20 @@
       function showEndScreen() {
         endScreen.style.display = "block";
         stopGame();
+      }
+
+      function gameOver(result) {
+        roundActive = false;
+        selectionPhase = false;
+        gameStarted = false;
+
+        if (result === "win") {
+          endMessage.innerHTML = `🎉 Победа!`;
+          showEndScreen();
+        } else if (result === "lose") {
+          endMessage.innerHTML = `💥 Поражение.`;
+          showEndScreen();
+        }
       }
 
       function resolveCollision(ball1, ball2) {
@@ -655,6 +672,20 @@
           ball1.spreadTimer = 60;
           ball2.spreadTimer = 60;
         }
+        const aliveBalls = balls.filter((b) => b.hp > 0);
+
+        const onlySelectedAlive = aliveBalls.every((b) => b.selectedByPlayer);
+        const onlyEnemyTeamAlive = aliveBalls.every(
+          (b) => !b.selectedByPlayer && enemyTeamMode
+        );
+
+        if (onlySelectedAlive && aliveBalls.length > 0) {
+          console.log("🎉 Победа игрока! Остались только выбранные шары.");
+          gameOver("win");
+        } else if (onlyEnemyTeamAlive && aliveBalls.length > 0) {
+          console.log("💀 Поражение! Остались только вражеские шары.");
+          gameOver("lose");
+        }
         checkGameState();
       }
 
@@ -724,7 +755,7 @@
 
       spawnBalls();
       gameLoop();
-      canvas.addEventListener("mousemove", handleClick);
+      canvas.addEventListener("click", handleClick);
     </script>
   </body>
 </html>

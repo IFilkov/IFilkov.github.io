@@ -143,6 +143,9 @@
           this.x = x;
           this.y = y;
           this.radius = 15;
+          this.baseRadius = 12;
+          this.scale = 1;
+          this.targetScale = 1;
           this.color = this.getColorByType(type);
           this.type = type;
           this.dx = 0;
@@ -186,14 +189,14 @@
 
         draw() {
           // 🌟 Если активна аура — рисуем жёлтую окружность
-          if (this.auraTimer > 0) {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius + 5, 0, Math.PI * 2);
-            ctx.strokeStyle = "orange";
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            ctx.closePath();
-          }
+          // if (this.auraTimer > 0) {
+          //   ctx.beginPath();
+          //   ctx.arc(this.x, this.y, this.radius + 5, 0, Math.PI * 2);
+          //   ctx.strokeStyle = "orange";
+          //   ctx.lineWidth = 2;
+          //   ctx.stroke();
+          //   ctx.closePath();
+          // }
 
           if (this.selectedByPlayer) {
             ctx.fillStyle = "green";
@@ -220,13 +223,16 @@
             ctx.fillText("RIP", this.x, this.y + 25);
           } else {
             // Рисуем живой шар
+            ctx.save(); // 💡 Сохраняем состояние перед масштабом
+            ctx.translate(this.x, this.y);
+            this.scale += (this.targetScale - this.scale) * 0.1;
+            ctx.scale(this.scale, this.scale);
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            // проверка на выбор
+            ctx.arc(0, 0, this.baseRadius, 0, Math.PI * 2); // ⬅️ координаты 0,0
             ctx.fillStyle = this.selectedByPlayer ? "lightblue" : this.color;
-            /* ctx.fillStyle = this.color;*/
             ctx.fill();
             ctx.stroke();
+            ctx.restore(); // 💡 Восстанавливаем масштаб и позицию
 
             if (enemyTeamMode && !this.selectedByPlayer && this.hp > 0) {
               ctx.fillStyle = "purple";
@@ -362,8 +368,9 @@
       //   }
       // });
       canvas.addEventListener("click", (e) => {
-        if (Date.now() - startTime > 4000) return; // Только первые 4 секунды
+        // if (Date.now() - startTime > 4000) return; // Только первые 4 секунды
         if (selectedBalls.length >= 4) return; // Строго 4 шара
+        handleSelection(e.clientX, e.clientY);
 
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
@@ -379,6 +386,11 @@
           if (Math.sqrt(dx * dx + dy * dy) < ball.radius) {
             ball.selectedByPlayer = true;
             selectedBalls.push(ball);
+            selectedBalls.push(ball);
+            // Вернём масштаб обратно через 0.6 секунды
+            setTimeout(() => {
+              ball.targetScale = 1;
+            }, 600);
             console.log("✅ Выбран шар", ball.id);
             break;
           }
@@ -386,7 +398,7 @@
       });
 
       canvas.addEventListener("touchstart", (e) => {
-        if (Date.now() - startTime > 4000) return; // Только первые 4 секунды
+        // if (Date.now() - startTime > 4000) return; // Только первые 4 секунды
         if (selectedBalls.length >= 4) return; // Строго 4 шара
 
         const rect = canvas.getBoundingClientRect();
@@ -394,6 +406,7 @@
         const touchX = touch.clientX - rect.left;
         const touchY = touch.clientY - rect.top;
         handleBallSelection(touchX, touchY);
+        handleSelection(touch.clientX, touch.clientY);
 
         for (const ball of balls) {
           if (ball.hp <= 0 || ball.selectedByPlayer) continue;
@@ -403,6 +416,11 @@
           if (Math.sqrt(dx * dx + dy * dy) < ball.radius) {
             ball.selectedByPlayer = true;
             selectedBalls.push(ball);
+            selectedBalls.push(ball);
+            // Вернём масштаб обратно через 0.6 секунды
+            setTimeout(() => {
+              ball.targetScale = 1;
+            }, 600);
             console.log("✅ Выбран шар", ball.id);
             break;
           }
@@ -452,12 +470,12 @@
       }
 
       function handleBallSelection(x, y) {
-        if (Date.now() - startTime > 4000) return;
+        // if (Date.now() - startTime > 4000) return;
 
         const selectedCount = balls.filter(
           (b) => b.selectedByPlayer && b.hp > 0
         ).length;
-        if (selectedCount >= 4) return; // ← теперь строгое ограничение на 4 живых выбранных шара
+        // if (selectedCount >= 4) return; // ← теперь строгое ограничение на 4 живых выбранных шара
 
         for (const ball of balls) {
           if (ball.hp <= 0 || ball.selectedByPlayer) continue;
@@ -731,6 +749,28 @@
         }
 
         requestAnimationFrame(gameLoop);
+      }
+
+      function handleSelection(clientX, clientY) {
+        const rect = canvas.getBoundingClientRect();
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
+
+        for (const ball of balls) {
+          if (ball.selectedByPlayer || selectedBalls.length >= 4) continue;
+          const dx = x - ball.x;
+          const dy = y - ball.y;
+          if (Math.hypot(dx, dy) < ball.radius * 1.5) {
+            ball.selectedByPlayer = true;
+            ball.targetScale = 2;
+            selectedBalls.push(ball);
+            // Вернём масштаб обратно через 0.6 секунды
+            setTimeout(() => {
+              ball.targetScale = 1;
+            }, 600);
+            break;
+          }
+        }
       }
 
       function handleClick(event) {

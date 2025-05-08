@@ -143,7 +143,7 @@
           this.x = x;
           this.y = y;
           this.radius = 15;
-          this.baseRadius = 12;
+          this.baseRadius = 15;
           this.scale = 1;
           this.targetScale = 1;
           this.color = this.getColorByType(type);
@@ -160,6 +160,9 @@
           this.bonusGiven = false;
           this.auraTimer = 0;
           this.auraColor = null;
+          this.isDragging = false;
+          this.offsetX = 0;
+          this.offsetY = 0;
         }
         activateAura(duration = 400) {
           this.auraTimer = duration;
@@ -272,6 +275,15 @@
               balls.auraTimer--;
             }
           });
+
+          if (!this.isDragging) {
+            // Стремится к центру
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const dx = centerX - this.x;
+            const dy = centerY - this.y;
+            const dist = Math.hypot(dx, dy);
+          }
 
           if (this.mode === "toCenter") {
             const centerX = canvas.width / 2;
@@ -427,6 +439,93 @@
         }
       });
 
+      let draggingBall = null;
+
+      canvas.addEventListener("mousedown", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        for (let ball of balls) {
+          const dx = mouseX - ball.x;
+          const dy = mouseY - ball.y;
+          if (
+            Math.sqrt(dx * dx + dy * dy) < ball.radius &&
+            ball.selectedByPlayer &&
+            ball.hp > 0
+          ) {
+            draggingBall = ball;
+            ball.isDragging = true;
+            ball.offsetX = dx;
+            ball.offsetY = dy;
+            break;
+          }
+        }
+      });
+
+      canvas.addEventListener("mousemove", (e) => {
+        if (draggingBall) {
+          const rect = canvas.getBoundingClientRect();
+          draggingBall.x = e.clientX - rect.left - draggingBall.offsetX;
+          draggingBall.y = e.clientY - rect.top - draggingBall.offsetY;
+        }
+      });
+
+      // canvas.addEventListener("mouseup", () => {
+      //   if (draggingBall) {
+      //     draggingBall.isDragging = false;
+      //     draggingBall.targetScale = 1; // 💡 сброс масштаба
+      //     draggingBall = null;
+      //   }
+      // });
+      canvas.addEventListener("mouseup", () => {
+        if (draggingBall) {
+          draggingBall.isDragging = false;
+          draggingBall.mode = "toCenter"; // 💡 Возвращаем в центр
+          draggingBall.targetScale = 1;
+          draggingBall = null;
+        }
+      });
+      canvas.addEventListener("touchstart", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        const touchX = touch.clientX - rect.left;
+        const touchY = touch.clientY - rect.top;
+
+        for (let ball of balls) {
+          const dx = touchX - ball.x;
+          const dy = touchY - ball.y;
+          if (
+            Math.sqrt(dx * dx + dy * dy) < ball.radius &&
+            ball.selectedByPlayer &&
+            ball.hp > 0
+          ) {
+            draggingBall = ball;
+            ball.isDragging = true;
+            ball.offsetX = dx;
+            ball.offsetY = dy;
+            break;
+          }
+        }
+      });
+
+      canvas.addEventListener("touchmove", (e) => {
+        if (draggingBall) {
+          e.preventDefault();
+          const rect = canvas.getBoundingClientRect();
+          const touch = e.touches[0];
+          draggingBall.x = touch.clientX - rect.left - draggingBall.offsetX;
+          draggingBall.y = touch.clientY - rect.top - draggingBall.offsetY;
+        }
+      });
+
+      canvas.addEventListener("touchend", () => {
+        if (draggingBall) {
+          draggingBall.isDragging = false;
+          draggingBall = null;
+        }
+      });
+
       function detectCollisions() {
         for (let i = 0; i < balls.length; i++) {
           for (let j = i + 1; j < balls.length; j++) {
@@ -567,6 +666,9 @@
             const dx = ball2.x - ball1.x;
             const dy = ball2.y - ball1.y;
             const distance = Math.hypot(dx, dy);
+            // const minDistance = ball2.baseRadius + ball1.baseRadius;
+
+            // return distance < minDistance;
 
             if (distance < ball1.radius + ball2.radius) {
               const angle = Math.atan2(dy, dx);

@@ -386,7 +386,7 @@
           if (Math.sqrt(dx * dx + dy * dy) < ball.radius) {
             ball.selectedByPlayer = true;
             selectedBalls.push(ball);
-            selectedBalls.push(ball);
+
             // Вернём масштаб обратно через 0.6 секунды
             setTimeout(() => {
               ball.targetScale = 1;
@@ -405,8 +405,8 @@
         const touch = e.touches[0];
         const touchX = touch.clientX - rect.left;
         const touchY = touch.clientY - rect.top;
-        handleBallSelection(touchX, touchY);
         handleSelection(touch.clientX, touch.clientY);
+        handleBallSelection(touchX, touchY);
 
         for (const ball of balls) {
           if (ball.hp <= 0 || ball.selectedByPlayer) continue;
@@ -416,7 +416,7 @@
           if (Math.sqrt(dx * dx + dy * dy) < ball.radius) {
             ball.selectedByPlayer = true;
             selectedBalls.push(ball);
-            selectedBalls.push(ball);
+
             // Вернём масштаб обратно через 0.6 секунды
             setTimeout(() => {
               ball.targetScale = 1;

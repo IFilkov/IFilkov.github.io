@@ -16,6 +16,7 @@
     </div>
 
     <div id="levelDisplay">Level 1</div>
+    <div id="VersionDisplay">Fighting balls @IFilkov</div>
 
     <style>
       canvas {
@@ -89,6 +90,15 @@
         font-size: 24px;
         font-weight: bold;
         color: blue;
+        font-family: sans-serif;
+        z-index: 10;
+      }
+      #VersionDisplay {
+        display: flex;
+        flex-direction: column;
+        align-items: end;
+        justify-content: flex-end;
+        color: rgb(24, 24, 25);
         font-family: sans-serif;
         z-index: 10;
       }
@@ -914,6 +924,9 @@
       }
 
       function resolveCollision(ball1, ball2) {
+        if (ball1.isDragging || ball2.isDragging) {
+          return; // Пропускаем столкновение, если один из шаров перетаскивается
+        }
         if (ball1.hp <= 0 || ball2.hp <= 0) return;
 
         // --- Новая логика для двух выбранных ---

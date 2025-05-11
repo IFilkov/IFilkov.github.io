@@ -15,6 +15,8 @@
       </div>
     </div>
 
+    <div id="levelDisplay">Level 1</div>
+
     <style>
       canvas {
         background-color: #eee;
@@ -80,6 +82,17 @@
         text-align: center;
       }
 
+      #levelDisplay {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 24px;
+        font-weight: bold;
+        color: blue;
+        font-family: sans-serif;
+        z-index: 10;
+      }
+
       @keyframes fadeInZoom {
         from {
           opacity: 0;
@@ -106,16 +119,23 @@
       let gameStarted = false;
       let winnerBall = null;
       let enemyTeamMode = false;
+      let isInitialStart = true;
 
       startBtn.onclick = () => {
         startBtn.style.display = "none";
         startGame();
       };
 
-      restartBtn.onclick = () => {
-        endScreen.style.display = "none";
-        startGame();
-      };
+      // restartBtn.onclick = () => {
+      //   endScreen.style.display = "none";
+      //   startGame();
+      // };
+
+      function updateLevelDisplay() {
+        document.getElementById(
+          "levelDisplay"
+        ).textContent = `Level ${currentLevel}`;
+      }
 
       function startGame() {
         playerSelectedBalls.length = 0;
@@ -125,13 +145,24 @@
           ball.selectedByPlayer = false;
         }
         spawnBalls();
-        selectionPhase = true;
+        selectionPhase = false;
         selectionTimer = 240;
-        roundActive = false;
+        roundActive = true;
         regroupTimer = 0;
         gameStarted = true;
         startTime = Date.now(); // обязательно!
+
+        updateLevelDisplay();
         console.log("🚀 Выберите 4 шара. Игра скоро начнётся...");
+
+        // if (!isInitialStart) {
+        //   // При запуске следующих уровней сразу переходим в игру, пропуская ожидание кнопки
+        //   setTimeout(() => {
+        //     selectionPhase = false;
+        //     roundActive = true;
+        //     console.log("🟢 Автостарт раунда (следующий уровень)");
+        //   }, 4000); // или 0, если хочешь сразу
+        // }
       }
 
       let selectionStartTime = Date.now();
@@ -163,6 +194,7 @@
           this.isDragging = false;
           this.offsetX = 0;
           this.offsetY = 0;
+          this.visualRadius = this.baseRadius + this.score * 2;
         }
         activateAura(duration = 400) {
           this.auraTimer = duration;
@@ -206,7 +238,7 @@
             ctx.font = "26px Arial";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText("R", this.x, this.y);
+            ctx.fillText("💀", this.x, this.y);
           }
           if (this.hp <= 0) {
             // Рисуем гробик
@@ -276,14 +308,14 @@
             }
           });
 
-          if (!this.isDragging) {
-            // Стремится к центру
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const dx = centerX - this.x;
-            const dy = centerY - this.y;
-            const dist = Math.hypot(dx, dy);
-          }
+          // if (!this.isDragging) {
+          //   // Стремится к центру
+          //   const centerX = canvas.width / 2;
+          //   const centerY = canvas.height / 2;
+          //   const dx = centerX - this.x;
+          //   const dy = centerY - this.y;
+          //   const dist = Math.hypot(dx, dy);
+          // }
 
           if (this.mode === "toCenter") {
             const centerX = canvas.width / 2;
@@ -450,7 +482,7 @@
           const dx = mouseX - ball.x;
           const dy = mouseY - ball.y;
           if (
-            Math.sqrt(dx * dx + dy * dy) < ball.radius &&
+            Math.sqrt(dx * dx + dy * dy) < ball.baseRadius &&
             ball.selectedByPlayer &&
             ball.hp > 0
           ) {
@@ -496,7 +528,7 @@
           const dx = touchX - ball.x;
           const dy = touchY - ball.y;
           if (
-            Math.sqrt(dx * dx + dy * dy) < ball.radius &&
+            Math.sqrt(dx * dx + dy * dy) < ball.baseRadius &&
             ball.selectedByPlayer &&
             ball.hp > 0
           ) {
@@ -534,7 +566,7 @@
             const dx = b1.x - b2.x;
             const dy = b1.y - b2.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < b1.radius + b2.radius) {
+            if (distance < b1.baseRadius + b2.baseRadius) {
               resolveCollision(b1, b2);
             }
           }
@@ -568,6 +600,119 @@
         console.log(`Бонус! ${ball.type}-${ball.id} получил +10 HP`);
       }
 
+      //       let isInitialStart = true;
+      // let currentLevel = 1;
+
+      function startGame() {
+        updateLevelDisplay();
+        playerSelectedBalls.length = 0;
+        balls = [];
+        selectedBalls = [];
+        for (const ball of balls) {
+          ball.selectedByPlayer = false;
+        }
+
+        spawnBalls();
+        selectionPhase = true;
+        selectionTimer = 240;
+        roundActive = false;
+        regroupTimer = 0;
+        gameStarted = true;
+        startTime = Date.now();
+
+        console.log(`🚀 Уровень ${currentLevel} — выберите 4 шара.`);
+
+        // Автостарт на уровнях 2 и выше
+        // if (!isInitialStart) {
+        //   setTimeout(() => {
+        //     selectionPhase = false;
+        //     roundActive = true;
+        //     console.log("🟢 Автостарт раунда");
+        //   }, 4000);
+        // }
+      }
+
+      // При нажатии кнопки "Начать игру"
+      document.getElementById("startBtn").addEventListener("click", () => {
+        document.getElementById("startBtn").remove();
+        isInitialStart = false;
+        currentLevel === 1;
+
+        startGame();
+      });
+
+      // Перезапуск игры (после проигрыша)
+      function restartGame() {
+        isInitialStart = true;
+        currentLevel = 1;
+
+        // const restartBtn = document.createElement("button");
+        // restartBtn.textContent = "Начать заново";
+        // restartBtn.style.position = "absolute";
+        // restartBtn.style.top = "50%";
+        // restartBtn.style.left = "50%";
+        // restartBtn.style.transform = "translate(-50%, -50%)";
+        // restartBtn.style.fontSize = "24px";
+        // restartBtn.style.padding = "10px 20px";
+
+        restartBtn.remove();
+        document.getElementById("startBtn")?.remove();
+        const newBtn = document.createElement("button");
+        newBtn.id = "startBtn";
+        newBtn.textContent = "Начать игру";
+        newBtn.style.position = "absolute";
+        newBtn.style.top = "50%";
+        newBtn.style.left = "50%";
+        newBtn.style.transform = "translate(-50%, -50%)";
+        newBtn.style.fontSize = "24px";
+        newBtn.style.padding = "10px 20px";
+        document.body.appendChild(newBtn);
+
+        newBtn.addEventListener("click", () => {
+          newBtn.remove();
+          isInitialStart = false;
+          currentLevel = 1;
+          startGame();
+        });
+      }
+
+      // Победа — увеличить уровень, сохранить TopScore
+      function handleWin() {
+        const totalScore = balls
+          .filter((b) => b.selectedByPlayer)
+          .reduce((sum, b) => sum + b.score, 0);
+        // enemyTeamMode = false; // сбрасываем режим EnemyTeam
+
+        console.log(`🎉 Победа! Очки: ${totalScore}`);
+        const top = Math.max(localStorage.getItem("TopScore") || 0, totalScore);
+        localStorage.setItem("TopScore", top);
+        const scoreDisplay = document.createElement("div");
+        scoreDisplay.textContent = `🏆 Top Score: ${top}`;
+        scoreDisplay.style.position = "absolute";
+        scoreDisplay.style.top = "10px";
+        scoreDisplay.style.left = "10px";
+        scoreDisplay.style.fontSize = "24px";
+        scoreDisplay.style.color = "gold";
+        document.body.appendChild(scoreDisplay);
+
+        currentLevel++;
+        updateLevelDisplay();
+        if (currentLevel === 4) {
+          console.log("➡️ Уровень 4 (заглушка)");
+        } else {
+          startGame();
+        }
+      }
+
+      // Поражение — обработка
+      function handleLoss() {
+        const totalScore = balls.reduce((sum, b) => sum + b.score, 0);
+        console.log(`💀 Поражение! Очки: ${totalScore}`);
+        const top = Math.max(localStorage.getItem("TopScore") || 0, totalScore);
+        localStorage.setItem("TopScore", top);
+        restartGame();
+      }
+
       function handleBallSelection(x, y) {
         // if (Date.now() - startTime > 4000) return;
 
@@ -583,7 +728,7 @@
           const dy = y - ball.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
 
-          if (distance < ball.radius + 10) {
+          if (distance < ball.baseRadius + 10) {
             ball.selectedByPlayer = true;
             selectedBalls.push(ball); // опционально, если используется
             console.log("✅ Выбран шар", ball.id);
@@ -608,31 +753,147 @@
         if (onlySelectedAlive && aliveBalls.length > 0) {
           console.log("🎉 Победа игрока! Остались только выбранные шары.");
           gameOver("win");
-          showEndScreen();
+          // showEndScreen();
+          startGame();
         } else if (onlyEnemyTeamAlive && aliveBalls.length > 0) {
           console.log("💀 Поражение! Остались только вражеские шары.");
           gameOver("lose");
-          showEndScreen();
+          // showEndScreen();
         }
       }
 
       function showEndScreen() {
-        endScreen.style.display = "block";
+        // endScreen.style.display = "block";
         stopGame();
       }
 
+      // function gameOver(result) {
+      //   roundActive = false;
+      //   selectionPhase = false;
+      //   gameStarted = false;
+
+      //   if (result === "win") {
+      //     const totalScore = balls
+      //       .filter((b) => b.hp > 0 && b.selectedByPlayer)
+      //       .reduce((sum, b) => sum + b.score, 0);
+
+      //     console.log(`🏆 Победа! Общий счёт: ${totalScore} очков.`);
+      //     showEndScreen();
+      //     endScreen.style.display = "block";
+      //     // Отображение на экране
+      //     showEndMessage(`🏆 Победа! Общий счёт: ${totalScore} очков.`);
+      //   } else if (result === "lose") {
+      //     showEndScreen();
+      //     // endScreen.style.display = "block";
+      //     console.log("💀 Поражение!");
+      //     showEndMessage("💀 Поражение!");
+      //   }
+      // }
+      function createRestartButton() {
+        const btn = document.createElement("button");
+        btn.textContent = "🔁 Играть снова";
+        btn.style.position = "absolute";
+        btn.style.top = "60%";
+        btn.style.left = "50%";
+        btn.style.transform = "translate(-50%, -50%)";
+        btn.style.padding = "10px 20px";
+        btn.style.fontSize = "16px";
+        document.body.appendChild(btn);
+
+        btn.addEventListener("click", () => {
+          document.body.removeChild(btn);
+          startGame(); // Функция перезапуска всей игры
+        });
+      }
+
+      let currentLevel = 1;
+
+      function nextLevel() {
+        // currentLevel++;
+
+        if (currentLevel === 2) {
+          console.log("Level 2 start");
+          startGame(); // Перезапускаем сцену
+        } else if (currentLevel === 3) {
+          console.log("Level 3 start");
+          startGame();
+        } else if (currentLevel === 4) {
+          console.log("Level 4 start");
+          // Пока ничего не делаем
+        }
+      }
+
       function gameOver(result) {
-        roundActive = false;
-        selectionPhase = false;
-        gameStarted = false;
+        enemyTeamMode = false;
+        let totalScore = balls.reduce(
+          (sum, b) => (b.hp > 0 ? sum + b.score : sum),
+          0
+        );
 
         if (result === "win") {
-          endMessage.innerHTML = `🎉 Победа!`;
-          showEndScreen();
-        } else if (result === "lose") {
-          endMessage.innerHTML = `💥 Поражение.`;
-          showEndScreen();
+          handleWin();
+          console.log(`🎉 Победа! Общий счёт: ${totalScore}`);
+          ctx.fillStyle = "green";
+          ctx.font = "20px Arial";
+          ctx.fillText(
+            `Победа! Очки: ${totalScore}`,
+            canvas.width / 2,
+            canvas.height / 2
+          );
+
+          // Сохраняем лучший результат
+          let topScore = localStorage.getItem("topScore") || 0;
+          if (totalScore > topScore) {
+            localStorage.setItem("topScore", totalScore);
+          }
+
+          // Показываем TopScore
+          const saved = localStorage.getItem("topScore");
+          ctx.fillStyle = "black";
+          ctx.fillText(
+            `Top Score: ${saved}`,
+            canvas.width / 2,
+            canvas.height / 2 + 30
+          );
+
+          // Переход на следующий уровень
+          nextLevel();
+        } else {
+          console.log(`💀 Поражение! Очки: ${totalScore}`);
+          handleLoss();
+          ctx.fillStyle = "red";
+          ctx.font = "20px Arial";
+          ctx.fillText(
+            `Поражение. Очки: ${totalScore}`,
+            canvas.width / 2,
+            canvas.height / 2
+          );
+
+          let topScore = localStorage.getItem("topScore") || 0;
+          if (totalScore > topScore) {
+            localStorage.setItem("topScore", totalScore);
+          }
+
+          // Кнопка перезапуска
+          // createRestartButton();
         }
+      }
+
+      function showEndMessage(text) {
+        const messageDiv = document.createElement("div");
+        messageDiv.innerText = text;
+        messageDiv.style.position = "absolute";
+        messageDiv.style.top = "50%";
+        messageDiv.style.left = "50%";
+        messageDiv.style.transform = "translate(-50%, -50%)";
+        messageDiv.style.fontSize = "32px";
+        messageDiv.style.fontWeight = "bold";
+        messageDiv.style.color = "white";
+        messageDiv.style.background = "rgba(0,0,0,0.7)";
+        messageDiv.style.padding = "20px";
+        messageDiv.style.borderRadius = "12px";
+        messageDiv.style.zIndex = "999";
+        document.body.appendChild(messageDiv);
       }
 
       function checkVictoryOrDefeat() {
@@ -666,11 +927,11 @@
             const dx = ball2.x - ball1.x;
             const dy = ball2.y - ball1.y;
             const distance = Math.hypot(dx, dy);
-            // const minDistance = ball2.baseRadius + ball1.baseRadius;
+            // const minDistance = ball2.basebaseRadius + ball1.basebaseRadius;
 
             // return distance < minDistance;
 
-            if (distance < ball1.radius + ball2.radius) {
+            if (distance < ball1.baseRadius + ball2.baseRadius) {
               const angle = Math.atan2(dy, dx);
               const force = 3;
 
@@ -711,13 +972,17 @@
         //   return; // Помеченные шары не сталкиваются между собой
         // }
 
-        if (distance < ball1.radius + ball2.radius) {
+        if (distance < ball1.baseRadius + ball2.baseRadius) {
           // === EnemyTeam режим ===
           if (!enemyTeamMode) {
             const unselected = balls.filter(
               (b) => !b.selectedByPlayer && b.hp > 0
             );
-            if (unselected.length <= 4) {
+            if (
+              (currentLevel === 1 && unselected.length <= 4) ||
+              (currentLevel === 2 && unselected.length <= 6) ||
+              (currentLevel === 3 && unselected.length <= 8)
+            ) {
               enemyTeamMode = true;
               console.log("EnemyTeam");
             }
@@ -728,7 +993,7 @@
             enemyTeamMode &&
             !ball1.selectedByPlayer &&
             !ball2.selectedByPlayer &&
-            distance < ball1.radius + ball2.radius
+            distance < ball1.baseRadius + ball2.baseRadius
           ) {
             const angle = Math.atan2(dy, dx);
             const force = 3;
@@ -778,9 +1043,9 @@
 
           // --- Победитель увеличивается ---
           if (ball1.score > ball2.score) {
-            ball1.radius += 1;
+            ball1.baseRadius += 1;
           } else if (ball2.score > ball1.score) {
-            ball2.radius += 1;
+            ball2.baseRadius += 1;
           }
 
           // --- Расчёт направления отталкивания ---
@@ -862,7 +1127,7 @@
           if (ball.selectedByPlayer || selectedBalls.length >= 4) continue;
           const dx = x - ball.x;
           const dy = y - ball.y;
-          if (Math.hypot(dx, dy) < ball.radius * 1.5) {
+          if (Math.hypot(dx, dy) < ball.baseRadius * 1.5) {
             ball.selectedByPlayer = true;
             ball.targetScale = 2;
             selectedBalls.push(ball);
@@ -889,7 +1154,7 @@
           const dy = ball.y - clickY;
           const distance = Math.sqrt(dx * dx + dy * dy);
 
-          if (distance < ball.radius + 5) {
+          if (distance < ball.baseRadius + 5) {
             if (!ball.selectedByPlayer && playerSelectedBalls.length < 4) {
               ball.selectedByPlayer = true;
 
@@ -904,6 +1169,10 @@
       spawnBalls();
       gameLoop();
       canvas.addEventListener("click", handleClick);
+      window.addEventListener("load", () => {
+        isInitialStart = false;
+        startGame();
+      });
     </script>
   </body>
 </html>

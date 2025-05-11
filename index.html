@@ -16,7 +16,7 @@
     </div>
 
     <div id="levelDisplay">Level 1</div>
-    <div id="VersionDisplay">Fighting balls @IFilkov</div>
+    <div id="VersionDisplay">"FightingBalls" @IFilkov</div>
 
     <style>
       canvas {
@@ -151,6 +151,9 @@
 
       startBtn.onclick = () => {
         startBtn.style.display = "none";
+        document.getElementById("VersionDisplay").classList.add("hidden");
+        isInitialStart = false;
+        currentLevel === 1;
         startGame();
       };
 
@@ -165,35 +168,41 @@
         ).textContent = `Level ${currentLevel}`;
       }
 
-      function startGame() {
-        document.getElementById("VersionDisplay").classList.add("none");
+      // function startGame() {
+      //   // document.getElementById("VersionDisplay").style.display = "none";
+      //   // document.getElementById("VersionDisplay").classList.add("hidden");
+      //   const versionDisplay = document.getElementById("VersionDisplay");
+      //   console.log(versionDisplay); // Проверь: не null?
+      //   if (versionDisplay) {
+      //     versionDisplay.classList.add("hidden");
+      //   }
 
-        playerSelectedBalls.length = 0;
-        balls = [];
-        selectedBalls = [];
-        for (const ball of balls) {
-          ball.selectedByPlayer = false;
-        }
-        spawnBalls();
-        selectionPhase = false;
-        selectionTimer = 240;
-        roundActive = true;
-        regroupTimer = 0;
-        gameStarted = true;
-        startTime = Date.now(); // обязательно!
+      //   playerSelectedBalls.length = 0;
+      //   balls = [];
+      //   selectedBalls = [];
+      //   for (const ball of balls) {
+      //     ball.selectedByPlayer = false;
+      //   }
+      //   spawnBalls();
+      //   selectionPhase = false;
+      //   selectionTimer = 240;
+      //   roundActive = true;
+      //   regroupTimer = 0;
+      //   gameStarted = true;
+      //   startTime = Date.now(); // обязательно!
 
-        updateLevelDisplay();
-        console.log("🚀 Выберите 4 шара. Игра скоро начнётся...");
+      //   updateLevelDisplay();
+      //   console.log("🚀 Выберите 4 шара. Игра скоро начнётся...");
 
-        // if (!isInitialStart) {
-        //   // При запуске следующих уровней сразу переходим в игру, пропуская ожидание кнопки
-        //   setTimeout(() => {
-        //     selectionPhase = false;
-        //     roundActive = true;
-        //     console.log("🟢 Автостарт раунда (следующий уровень)");
-        //   }, 4000); // или 0, если хочешь сразу
-        // }
-      }
+      //   // if (!isInitialStart) {
+      //   //   // При запуске следующих уровней сразу переходим в игру, пропуская ожидание кнопки
+      //   //   setTimeout(() => {
+      //   //     selectionPhase = false;
+      //   //     roundActive = true;
+      //   //     console.log("🟢 Автостарт раунда (следующий уровень)");
+      //   //   }, 4000); // или 0, если хочешь сразу
+      //   // }
+      // }
 
       let selectionStartTime = Date.now();
       let selectedBalls = [];
@@ -634,6 +643,13 @@
       // let currentLevel = 1;
 
       function startGame() {
+        // const versionDisplay = document.getElementById("VersionDisplay");
+        // console.log(versionDisplay); // Проверь: не null?2
+        // if (versionDisplay) {
+        //   versionDisplay.classList.add("hidden");
+        // }
+        // document.getElementById("VersionDisplay").classList.add("hidden");
+
         updateLevelDisplay();
         playerSelectedBalls.length = 0;
         balls = [];
@@ -643,6 +659,7 @@
         }
 
         spawnBalls();
+        enemyTeamMode = false;
         selectionPhase = true;
         selectionTimer = 240;
         roundActive = false;
@@ -663,13 +680,13 @@
       }
 
       // При нажатии кнопки "Начать игру"
-      document.getElementById("startBtn").addEventListener("click", () => {
-        document.getElementById("startBtn").remove();
-        isInitialStart = false;
-        currentLevel === 1;
+      // document.getElementById("startBtn").addEventListener("click", () => {
+      //   document.getElementById("startBtn").remove();
+      //   isInitialStart = false;
+      //   currentLevel === 1;
 
-        startGame();
-      });
+      //   startGame();
+      // });
 
       // Перезапуск игры (после проигрыша)
       function restartGame() {
@@ -687,6 +704,7 @@
 
         restartBtn.remove();
         document.getElementById("startBtn")?.remove();
+
         const newBtn = document.createElement("button");
         newBtn.id = "startBtn";
         newBtn.textContent = "Начать игру";
@@ -699,6 +717,7 @@
         document.body.appendChild(newBtn);
 
         newBtn.addEventListener("click", () => {
+          document.getElementById("VersionDisplay").classList.add("hidden");
           newBtn.remove();
           isInitialStart = false;
           currentLevel = 1;
@@ -843,6 +862,7 @@
 
         if (currentLevel === 2) {
           console.log("Level 2 start");
+          document.getElementById("VersionDisplay").classList.add("hidden");
           startGame(); // Перезапускаем сцену
         } else if (currentLevel === 3) {
           console.log("Level 3 start");
@@ -854,6 +874,7 @@
       }
 
       function gameOver(result) {
+        // document.getElementById("VersionDisplay").classList.remove("hidden");
         document.getElementById("VersionDisplay").classList.remove("hidden");
 
         enemyTeamMode = false;

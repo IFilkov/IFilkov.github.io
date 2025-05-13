@@ -5,21 +5,17 @@
     <title>Ball Game</title>
   </head>
   <body>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
-
-    <div id="ui">
+    <div id="gameContainer">
+      <canvas id="gameCanvas"></canvas>
+      <!-- <div id="startBtn">▶ Начать игру</div> -->
       <button id="startBtn">▶ Начать игру</button>
-      <div id="endScreen" style="display: none">
-        <h2 id="endMessage"></h2>
-        <button id="restartBtn">🔁 Сыграть ещё раз</button>
-      </div>
+      <!-- <div id="topScoreDisplay">TopScore: 0</div> -->
+      <div id="levelDisplay">Level 1</div>
+      <div id="VersionDisplay">Fighting balls @IFilkov</div>
     </div>
 
-    <div id="levelDisplay">Level 1</div>
-    <div id="VersionDisplay">"FightingBalls" @IFilkov</div>
-
     <style>
-      canvas {
+      /* canvas {
         background-color: #eee;
         display: block;
         margin: auto;
@@ -97,13 +93,116 @@
         position: fixed;
         bottom: 10px;
         right: -100%; /* Начинается за экраном */
-        white-space: nowrap;
+      /* white-space: nowrap;
         font-family: Arial, sans-serif;
-        font-size: 14px;
+        font-size: 42px;
         color: #00aaff;
         z-index: 1000;
-        animation: marquee 20s linear infinite;
+        animation: marquee 10s linear infinite;
         pointer-events: none;
+      }
+
+      @keyframes marquee {
+        0% {
+          right: -100%;
+        }
+        100% {
+          right: 100%;
+          transform: translateX(-100vw);
+        }
+      }
+
+      Скрываем при старте
+      #VersionDisplay.hidden {
+        display: none;
+      }
+
+      @keyframes fadeInZoom {
+        from {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      */
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+        font-family: sans-serif;
+        background-color: #eee;
+      }
+
+      #gameContainer {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      #gameCanvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+        background-color: #eee;
+      }
+
+      /* Центрированная кнопка */
+      #startBtn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 12px 24px;
+        font-size: 24px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        /* border-radius: 12px; */
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 10;
+      }
+
+      /* TopScore — верхний левый угол */
+      #topScoreDisplay {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        color: #0ff;
+        font-size: 18px;
+        z-index: 10;
+      }
+
+      /* Level — верхний правый угол */
+      #levelDisplay {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: #00f;
+        font-size: 24px;
+        z-index: 10;
+      }
+
+      /* Бегущая строка снизу справа */
+      #VersionDisplay {
+        position: absolute;
+        font-family: Arial, sans-serif;
+        font-size: 42px;
+        bottom: 10px;
+        right: -100%;
+        white-space: nowrap;
+        color: #212b9b;
+        animation: marquee 10s linear infinite;
+        z-index: 10;
       }
 
       @keyframes marquee {
@@ -137,6 +236,14 @@
       const canvas = document.getElementById("gameCanvas");
       const ctx = canvas.getContext("2d");
 
+      // Растягиваем под размер экрана
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas(); // сразу при загрузке
+
       const startBtn = document.getElementById("startBtn");
       const endScreen = document.getElementById("endScreen");
       const endMessage = document.getElementById("endMessage");
@@ -157,52 +264,11 @@
         startGame();
       };
 
-      // restartBtn.onclick = () => {
-      //   endScreen.style.display = "none";
-      //   startGame();
-      // };
-
       function updateLevelDisplay() {
         document.getElementById(
           "levelDisplay"
         ).textContent = `Level ${currentLevel}`;
       }
-
-      // function startGame() {
-      //   // document.getElementById("VersionDisplay").style.display = "none";
-      //   // document.getElementById("VersionDisplay").classList.add("hidden");
-      //   const versionDisplay = document.getElementById("VersionDisplay");
-      //   console.log(versionDisplay); // Проверь: не null?
-      //   if (versionDisplay) {
-      //     versionDisplay.classList.add("hidden");
-      //   }
-
-      //   playerSelectedBalls.length = 0;
-      //   balls = [];
-      //   selectedBalls = [];
-      //   for (const ball of balls) {
-      //     ball.selectedByPlayer = false;
-      //   }
-      //   spawnBalls();
-      //   selectionPhase = false;
-      //   selectionTimer = 240;
-      //   roundActive = true;
-      //   regroupTimer = 0;
-      //   gameStarted = true;
-      //   startTime = Date.now(); // обязательно!
-
-      //   updateLevelDisplay();
-      //   console.log("🚀 Выберите 4 шара. Игра скоро начнётся...");
-
-      //   // if (!isInitialStart) {
-      //   //   // При запуске следующих уровней сразу переходим в игру, пропуская ожидание кнопки
-      //   //   setTimeout(() => {
-      //   //     selectionPhase = false;
-      //   //     roundActive = true;
-      //   //     console.log("🟢 Автостарт раунда (следующий уровень)");
-      //   //   }, 4000); // или 0, если хочешь сразу
-      //   // }
-      // }
 
       let selectionStartTime = Date.now();
       let selectedBalls = [];
@@ -430,26 +496,7 @@
       }
 
       let startTime = Date.now();
-      // canvas.addEventListener("mousemove", (e) => {
-      //   if (Date.now() - startTime > 4000) return; // Только первые 4 секунды
-      //   if (selectedBalls.length >= 4) return; // ❗ Уже выбрано 4 — дальше не обрабатываем
-      //   const rect = canvas.getBoundingClientRect();
-      //   const mouseX = e.clientX - rect.left;
-      //   const mouseY = e.clientY - rect.top;
 
-      //   for (const ball of balls) {
-      //     if (ball.hp <= 0 || ball.selectedByPlayer) continue; // Не выбираем мёртвых или уже выбранных
-      //     const dx = mouseX - ball.x;
-      //     const dy = mouseY - ball.y;
-      //     if (Math.sqrt(dx * dx + dy * dy) < ball.radius) {
-      //       if (selectedBalls.length < 4) {
-      //         ball.selectedByPlayer = true;
-      //         selectedBalls.push(ball);
-      //         break;
-      //       }
-      //     }
-      //   }
-      // });
       canvas.addEventListener("click", (e) => {
         // if (Date.now() - startTime > 4000) return; // Только первые 4 секунды
         if (selectedBalls.length >= 4) return; // Строго 4 шара
@@ -542,13 +589,6 @@
         }
       });
 
-      // canvas.addEventListener("mouseup", () => {
-      //   if (draggingBall) {
-      //     draggingBall.isDragging = false;
-      //     draggingBall.targetScale = 1; // 💡 сброс масштаба
-      //     draggingBall = null;
-      //   }
-      // });
       canvas.addEventListener("mouseup", () => {
         if (draggingBall) {
           draggingBall.isDragging = false;
@@ -611,7 +651,7 @@
           }
         }
       }
-      /*winnerBall = [];*/
+
       const playerSelectedBallIds = [];
 
       function stopGame() {
@@ -638,9 +678,6 @@
         // console.log(`Бонус! ${ball.id} получил +20 HP`);
         console.log(`Бонус! ${ball.type}-${ball.id} получил +10 HP`);
       }
-
-      //       let isInitialStart = true;
-      // let currentLevel = 1;
 
       function startGame() {
         // const versionDisplay = document.getElementById("VersionDisplay");
@@ -679,15 +716,6 @@
         // }
       }
 
-      // При нажатии кнопки "Начать игру"
-      // document.getElementById("startBtn").addEventListener("click", () => {
-      //   document.getElementById("startBtn").remove();
-      //   isInitialStart = false;
-      //   currentLevel === 1;
-
-      //   startGame();
-      // });
-
       // Перезапуск игры (после проигрыша)
       function restartGame() {
         isInitialStart = true;
@@ -702,7 +730,7 @@
         // restartBtn.style.fontSize = "24px";
         // restartBtn.style.padding = "10px 20px";
 
-        restartBtn.remove();
+        // restartBtn.remove();
         document.getElementById("startBtn")?.remove();
 
         const newBtn = document.createElement("button");
@@ -866,6 +894,7 @@
           startGame(); // Перезапускаем сцену
         } else if (currentLevel === 3) {
           console.log("Level 3 start");
+          document.getElementById("VersionDisplay").classList.add("hidden");
           startGame();
         } else if (currentLevel === 4) {
           console.log("Level 4 start");

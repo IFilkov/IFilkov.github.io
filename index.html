@@ -811,6 +811,11 @@
             console.log("✅ Выбран шар", ball.id);
             break;
           }
+
+          let hitRadius = ball.baseRadius;
+          if ("ontouchstart" in window) {
+            hitRadius += 20; // если тач — ещё больше
+          }
         }
       }
 

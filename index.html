@@ -5,17 +5,21 @@
     <title>Ball Game</title>
   </head>
   <body>
-    <div id="gameContainer">
-      <canvas id="gameCanvas"></canvas>
-      <!-- <div id="startBtn">▶ Начать игру</div> -->
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+    <div id="ui">
       <button id="startBtn">▶ Начать игру</button>
-      <!-- <div id="topScoreDisplay">TopScore: 0</div> -->
-      <div id="levelDisplay">Level 1</div>
-      <div id="VersionDisplay">Fighting balls @IFilkov</div>
+      <div id="endScreen" style="display: none">
+        <h2 id="endMessage"></h2>
+        <button id="restartBtn">🔁 Сыграть ещё раз</button>
+      </div>
     </div>
 
+    <div id="levelDisplay">Level 1</div>
+    <div id="VersionDisplay">"FightingBalls" @IFilkov</div>
+
     <style>
-      /* canvas {
+      canvas {
         background-color: #eee;
         display: block;
         margin: auto;
@@ -93,116 +97,13 @@
         position: fixed;
         bottom: 10px;
         right: -100%; /* Начинается за экраном */
-      /* white-space: nowrap;
+        white-space: nowrap;
         font-family: Arial, sans-serif;
         font-size: 42px;
         color: #00aaff;
         z-index: 1000;
         animation: marquee 10s linear infinite;
         pointer-events: none;
-      }
-
-      @keyframes marquee {
-        0% {
-          right: -100%;
-        }
-        100% {
-          right: 100%;
-          transform: translateX(-100vw);
-        }
-      }
-
-      Скрываем при старте
-      #VersionDisplay.hidden {
-        display: none;
-      }
-
-      @keyframes fadeInZoom {
-        from {
-          opacity: 0;
-          transform: scale(0.5);
-        }
-        to {
-          opacity: 1;
-          transform: scale(1);
-        }
-      }
-      */
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        height: 100%;
-        width: 100%;
-        font-family: sans-serif;
-        background-color: #eee;
-      }
-
-      #gameContainer {
-        position: relative;
-        width: 100vw;
-        height: 100vh;
-        overflow: hidden;
-      }
-
-      #gameCanvas {
-        width: 100%;
-        height: 100%;
-        display: block;
-        background-color: #eee;
-      }
-
-      /* Центрированная кнопка */
-      #startBtn {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        padding: 12px 24px;
-        font-size: 24px;
-        background-color: #28a745;
-        color: white;
-        border: none;
-        /* border-radius: 12px; */
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        cursor: pointer;
-        z-index: 10;
-      }
-
-      /* TopScore — верхний левый угол */
-      #topScoreDisplay {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        color: #0ff;
-        font-size: 18px;
-        z-index: 10;
-      }
-
-      /* Level — верхний правый угол */
-      #levelDisplay {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        color: #00f;
-        font-size: 24px;
-        z-index: 10;
-      }
-
-      /* Бегущая строка снизу справа */
-      #VersionDisplay {
-        position: absolute;
-        font-family: Arial, sans-serif;
-        font-size: 42px;
-        bottom: 10px;
-        right: -100%;
-        white-space: nowrap;
-        color: #212b9b;
-        animation: marquee 10s linear infinite;
-        z-index: 10;
       }
 
       @keyframes marquee {
@@ -235,14 +136,6 @@
     <script>
       const canvas = document.getElementById("gameCanvas");
       const ctx = canvas.getContext("2d");
-
-      // Растягиваем под размер экрана
-      function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-      window.addEventListener("resize", resizeCanvas);
-      resizeCanvas(); // сразу при загрузке
 
       const startBtn = document.getElementById("startBtn");
       const endScreen = document.getElementById("endScreen");
@@ -602,13 +495,12 @@
         const touch = e.touches[0];
         const touchX = touch.clientX - rect.left;
         const touchY = touch.clientY - rect.top;
-        let hitRadius = ball.ball.radius + 25; // побольше для пальца
 
         for (let ball of balls) {
           const dx = touchX - ball.x;
           const dy = touchY - ball.y;
           if (
-            Math.sqrt(dx * dx + dy * dy) < ball.hitRadius &&
+            Math.sqrt(dx * dx + dy * dy) < ball.baseRadius &&
             ball.selectedByPlayer &&
             ball.hp > 0
           ) {
@@ -731,7 +623,7 @@
         // restartBtn.style.fontSize = "24px";
         // restartBtn.style.padding = "10px 20px";
 
-        // restartBtn.remove();
+        restartBtn.remove();
         document.getElementById("startBtn")?.remove();
 
         const newBtn = document.createElement("button");
@@ -813,11 +705,6 @@
             break;
           }
         }
-        //   let hitRadius = ball.baseRadius;
-        //   if ("ontouchstart" in window) {
-        //     hitRadius += 20; // если тач — ещё больше
-        //   }
-        // }
       }
 
       function checkGameState() {

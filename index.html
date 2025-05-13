@@ -602,7 +602,7 @@
         const touch = e.touches[0];
         const touchX = touch.clientX - rect.left;
         const touchY = touch.clientY - rect.top;
-        let hitRadius = ball.baseRadius + 25; // побольше для пальца
+        let hitRadius = ball.ball.radius + 25; // побольше для пальца
 
         for (let ball of balls) {
           const dx = touchX - ball.x;

@@ -602,12 +602,13 @@
         const touch = e.touches[0];
         const touchX = touch.clientX - rect.left;
         const touchY = touch.clientY - rect.top;
+        let hitRadius = ball.baseRadius + 25; // побольше для пальца
 
         for (let ball of balls) {
           const dx = touchX - ball.x;
           const dy = touchY - ball.y;
           if (
-            Math.sqrt(dx * dx + dy * dy) < ball.baseRadius &&
+            Math.sqrt(dx * dx + dy * dy) < ball.hitRadius &&
             ball.selectedByPlayer &&
             ball.hp > 0
           ) {
@@ -811,12 +812,12 @@
             console.log("✅ Выбран шар", ball.id);
             break;
           }
-
-          let hitRadius = ball.baseRadius;
-          if ("ontouchstart" in window) {
-            hitRadius += 20; // если тач — ещё больше
-          }
         }
+        //   let hitRadius = ball.baseRadius;
+        //   if ("ontouchstart" in window) {
+        //     hitRadius += 20; // если тач — ещё больше
+        //   }
+        // }
       }
 
       function checkGameState() {

@@ -30,8 +30,6 @@
         background-color: #eee;
       }
       canvas {
-        width: 100%;
-        height: 100%;
         background-color: #eee;
         display: block;
         margin: auto;
@@ -148,6 +146,14 @@
     <script>
       const canvas = document.getElementById("gameCanvas");
       const ctx = canvas.getContext("2d");
+
+      // Растягиваем под размер экрана
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas(); // сразу при загрузке
 
       const startBtn = document.getElementById("startBtn");
       const endScreen = document.getElementById("endScreen");

@@ -64,18 +64,19 @@
 
       .help-button {
         position: absolute;
-        bottom: 20px;
+        bottom: 0;
         left: 20px;
-        width: 50px;
-        height: 50px;
+        width: 100px;
+        height: 100px;
         border-radius: 50%;
-        font-size: 30px;
-        color: white;
-        background-color: red;
+        font-size: 80px;
+        color: red;
+        background-color: #eeeeee00;
+        /* opacity: 0.8; */
         border: none;
         cursor: pointer;
-        z-index: 9999;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); */
         pointer-events: auto;
       }
 
@@ -159,7 +160,7 @@
         font-weight: bold;
         color: blue;
         font-family: sans-serif;
-        z-index: 10;
+        z-index: 100;
       }
       #VersionDisplay {
         position: fixed;
@@ -169,7 +170,7 @@
         font-family: Arial, sans-serif;
         font-size: 42px;
         color: #00aaff;
-        z-index: 1000;
+        z-index: 9999;
         animation: marquee 10s linear infinite;
         pointer-events: none;
       }

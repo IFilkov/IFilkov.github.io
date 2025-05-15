@@ -26,16 +26,6 @@
       <div id="helpModal" class="modal hidden">
         <div class="modal-content">
           <h2>Как играть?</h2>
-          <p>Выберите 4 шара на старте, затем наблюдайте бой!</p>
-          <p>Вы можите перемещать выбранные шары в лучшие позиции</p>
-          <p>касание друг об друга командных шаров дает им БАФФ в виде HP</p>
-          <p>
-            когда независимых шаров на поле остается мало, они объединяются в
-            команду</p>
-            <p>с каждым уровнем такая команда становится больше</p>
-          </p>
-          <p>Критерий победы, хотя бы один шар из команды должен выжить, <br>при этом вражеская команда должна быть полность уничтожена</p>
-          <p>Очки начисляются за столкновения и победу.</p>
         </div>
       </div>
     </div>
@@ -282,7 +272,6 @@
         }
       }
     </style>
-    
 
     <script>
       const canvas = document.getElementById("gameCanvas");
@@ -801,7 +790,7 @@
         // console.log(`Бонус! ${ball.id} получил +20 HP`);
         console.log(`Бонус! ${ball.type}-${ball.id} получил +10 HP`);
       }
-
+      clearInterval(introInterval);
       function startGame() {
         // const versionDisplay = document.getElementById("VersionDisplay");
         // console.log(versionDisplay); // Проверь: не null?2
@@ -809,7 +798,7 @@
         //   versionDisplay.classList.add("hidden");
         // }
         // document.getElementById("VersionDisplay").classList.add("hidden");
-
+        // clearInterval(introInterval);
         updateLevelDisplay();
         playerSelectedBalls.length = 0;
         balls = [];

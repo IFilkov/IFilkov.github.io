@@ -31,7 +31,7 @@
           <p>касание друг об друга командных шаров дает им БАФФ в виде HP</p>
           <p>
             когда независимых шаров на поле остается мало, они объединяются в
-            команду
+            команду</p>
             <p>с каждым уровнем такая команда становится больше</p>
           </p>
           <p>Критерий победы, хотя бы один шар из команды должен выжить, <br>при этом вражеская команда должна быть полность уничтожена</p>
@@ -282,6 +282,7 @@
         }
       }
     </style>
+    
 
     <script>
       const canvas = document.getElementById("gameCanvas");
@@ -366,6 +367,7 @@
       let isInitialStart = true;
 
       startBtn.onclick = () => {
+        // clearInterval(introInterval);
         document.getElementById("introContainer").style.display = "none";
         startBtn.style.display = "none";
         helpButton.style.display = "none";
@@ -826,7 +828,7 @@
         startTime = Date.now();
 
         console.log(`🚀 Уровень ${currentLevel} — выберите 4 шара.`);
-
+        // document.getElementById("introContainer").style.display = "none";
         // Автостарт на уровнях 2 и выше
         // if (!isInitialStart) {
         //   setTimeout(() => {
@@ -869,6 +871,7 @@
           document.getElementById("VersionDisplay").classList.add("hidden");
           newBtn.remove();
           helpButton.style.display = "none";
+          document.getElementById("introContainer").style.display = "none";
           isInitialStart = false;
           currentLevel = 1;
           startGame();
@@ -1009,20 +1012,30 @@
 
       function nextLevel() {
         // currentLevel++;
-
+        if (currentLevel === 1) {
+          console.log("Level 1 start");
+          document.getElementById("VersionDisplay").classList.add("hidden");
+          helpButton.style.display = "none";
+          // clearInterval(introInterval);
+          document.getElementById("introContainer").style.display = "none";
+          startGame(); // Перезапускаем сцену
+        }
         if (currentLevel === 2) {
           console.log("Level 2 start");
           document.getElementById("VersionDisplay").classList.add("hidden");
           helpButton.style.display = "none";
+          // clearInterval(introInterval);
           document.getElementById("introContainer").style.display = "none";
           startGame(); // Перезапускаем сцену
         } else if (currentLevel === 3) {
           console.log("Level 3 start");
           document.getElementById("VersionDisplay").classList.add("hidden");
           helpButton.style.display = "none";
+          // clearInterval(introInterval);
           document.getElementById("introContainer").style.display = "none";
           startGame();
         } else if (currentLevel === 4) {
+          // clearInterval(introInterval);
           document.getElementById("introContainer").style.display = "none";
           console.log("Level 4 start");
 

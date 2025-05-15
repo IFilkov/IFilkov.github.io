@@ -25,7 +25,39 @@
       <!-- Модальное окно -->
       <div id="helpModal" class="modal hidden">
         <div class="modal-content">
-          <h2>Как играть?</h2>
+          <h2>Как играть</h2>
+          <div class="help-grid">
+            <div class="help-item">
+              <img src="/img/file3.webp" alt="Описание 1" />
+              <p>Выбери 4 любых шара, теперь это твоя команда</p>
+            </div>
+            <div class="help-item">
+              <img src="/img/file2.webp" alt="Описание 2" />
+              <p>Команда при столкновении получает бонус HP</p>
+            </div>
+            <div class="help-item">
+              <img src="/img/file4.webp" alt="Описание 3" />
+              <p>
+                Когда шаров остается мало, они объединяются в команду, с каждым
+                уровнем такая команда будет увеличиваться
+              </p>
+            </div>
+            <div class="help-item">
+              <img src="/img/file1.webp" alt="Описание 4" />
+              <p>
+                Как и твоя команда, они теперь получают бонус HP, но повышенный!
+              </p>
+            </div>
+            <div class="help-item">
+              <img src="/img/video1.gif" alt="Описание 5" width="200px" />
+              <p>Ты можешь перемещать свои шары в лучшие позиции</p>
+            </div>
+            <div class="help-item">
+              <p class="winer">
+                Слаженная командная работа, залог успеха, удачи!
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -105,6 +137,26 @@
         border-radius: 10px;
         max-width: 90%;
         text-align: center;
+      }
+      .help-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+      }
+
+      .help-item {
+        text-align: center;
+      }
+
+      .help-grid > .help-item:last-child {
+        grid-column: span 5;
+      }
+
+      .help-item img {
+        max-width: 100%;
+        border-radius: 8px;
+        margin-bottom: 8px;
       }
 
       .hidden {
@@ -275,6 +327,17 @@
           transform: translateX(var(--end));
           opacity: 0;
         }
+      }
+
+      .winer {
+        font-size: 46px;
+      }
+
+      #boomWord {
+        font-size: 8vw;
+      }
+      #ballsWord {
+        font-size: 6vw;
       }
     </style>
 

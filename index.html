@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Ball Game</title>
+    <title>BoomBalls</title>
   </head>
   <body>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
@@ -14,6 +14,11 @@
         <button id="restartBtn">🔁 Сыграть ещё раз</button>
       </div>
 
+      <div id="introContainer">
+        <div id="boomWord"></div>
+        <div id="ballsWord">Balls</div>
+      </div>
+
       <!-- Вопрос-кнопка -->
       <button id="helpButton" class="help-button">?</button>
 
@@ -21,17 +26,22 @@
       <div id="helpModal" class="modal hidden">
         <div class="modal-content">
           <h2>Как играть?</h2>
+          <p>Выберите 4 шара на старте, затем наблюдайте бой!</p>
+          <p>Вы можите перемещать выбранные шары в лучшие позиции</p>
+          <p>касание друг об друга командных шаров дает им БАФФ в виде HP</p>
           <p>
-            Выберите до 4 шаров до старта, затем наблюдайте бой! Побеждает тот,
-            кто останется один!
+            когда независимых шаров на поле остается мало, они объединяются в
+            команду
+            <p>с каждым уровнем такая команда становится больше</p>
           </p>
+          <p>Критерий победы, хотя бы один шар из команды должен выжить, <br>при этом вражеская команда должна быть полность уничтожена</p>
           <p>Очки начисляются за столкновения и победу.</p>
         </div>
       </div>
     </div>
 
     <div id="levelDisplay">Level 1</div>
-    <div id="VersionDisplay">"FightingBalls" @IFilkov</div>
+    <div id="VersionDisplay">"BoomBalls" @IFilkov</div>
 
     <style>
       html,
@@ -108,8 +118,8 @@
 
       #startBtn,
       #restartBtn {
-        width: 200px;
-        height: 200px;
+        width: 150px;
+        height: 150px;
         font-size: 20px;
         padding: 12px 24px;
         cursor: pointer;
@@ -158,7 +168,7 @@
         right: 20px;
         font-size: 24px;
         font-weight: bold;
-        color: blue;
+        color: #00aaff;
         font-family: sans-serif;
         z-index: 100;
       }
@@ -200,6 +210,77 @@
           transform: scale(1);
         }
       }
+
+      #introContainer {
+        position: absolute;
+        top: 20%;
+        width: 100%;
+        text-align: center;
+        z-index: 999;
+        pointer-events: none;
+      }
+
+      #boomWord {
+        font-size: 64px;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        position: relative;
+        animation: slideInBoom 1.5s ease-out forwards;
+        transform: translateX(-100%);
+      }
+
+      #ballsWord {
+        font-size: 48px;
+        color: #00aaff;
+        font-weight: bold;
+        opacity: 0;
+        animation: slideInBalls 1.5s ease-out 1.5s forwards;
+        position: relative;
+        transform: translateX(100%);
+      }
+
+      /* @keyframes slideInBoom {
+        to {
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInBalls {
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      } */
+      /* Вход */
+      @keyframes slideIn {
+        0% {
+          transform: translateX(var(--start));
+          opacity: 0;
+        }
+        50% {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        70% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* Выход */
+      @keyframes slideOut {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(var(--end));
+          opacity: 0;
+        }
+      }
     </style>
 
     <script>
@@ -214,6 +295,64 @@
       window.addEventListener("resize", resizeCanvas);
       resizeCanvas(); // сразу при загрузке
 
+      // window.addEventListener("DOMContentLoaded", () => {
+      //   const boomColors = ["green", "orange", "purple", "pink"];
+      //   const boomText = "Boom";
+      //   const boomWord = document.getElementById("boomWord");
+
+      //   // Очистим на случай перезапуска
+      //   // boomWord.innerHTML = "";
+
+      //   for (let i = 0; i < boomText.length; i++) {
+      //     const span = document.createElement("span");
+      //     span.textContent = boomText[i];
+      //     span.style.color =
+      //       boomColors[Math.floor(Math.random() * boomColors.length)];
+      //     span.style.margin = "0 5px";
+      //     boomWord.appendChild(span);
+      //   }
+      // });
+      const boomColors = ["green", "orange", "purple", "pink"];
+      const boomWord = document.getElementById("boomWord");
+      const ballsWord = document.getElementById("ballsWord");
+      let introInterval;
+
+      function animateIntro() {
+        // Очистить Boom и подготовить
+        boomWord.innerHTML = "";
+        boomWord.style.setProperty("--start", "-100vw");
+        boomWord.style.setProperty("--end", "100vw");
+        boomWord.style.animation = "slideIn 1.5s ease-out forwards";
+
+        // Сгенерировать раскрашенные буквы Boom
+        const boomText = "Boom";
+        for (let i = 0; i < boomText.length; i++) {
+          const span = document.createElement("span");
+          span.textContent = boomText[i];
+          span.style.color =
+            boomColors[Math.floor(Math.random() * boomColors.length)];
+          span.style.margin = "0 5px";
+          boomWord.appendChild(span);
+        }
+
+        // Анимация Balls
+        ballsWord.style.setProperty("--start", "100vw");
+        ballsWord.style.setProperty("--end", "-100vw");
+        ballsWord.style.animation = "slideIn 1.5s ease-out 0.3s forwards";
+
+        // Выход через 3 секунды
+        setTimeout(() => {
+          boomWord.style.animation = "slideOut 1s ease-in forwards";
+          ballsWord.style.animation = "slideOut 1s ease-in forwards";
+        }, 3000);
+      }
+
+      // Запустить цикл анимации до начала игры
+      window.addEventListener("DOMContentLoaded", () => {
+        animateIntro();
+        introInterval = setInterval(animateIntro, 4000);
+      });
+
       const startBtn = document.getElementById("startBtn");
       const endScreen = document.getElementById("endScreen");
       const endMessage = document.getElementById("endMessage");
@@ -227,6 +366,7 @@
       let isInitialStart = true;
 
       startBtn.onclick = () => {
+        document.getElementById("introContainer").style.display = "none";
         startBtn.style.display = "none";
         helpButton.style.display = "none";
         document.getElementById("VersionDisplay").classList.add("hidden");
@@ -874,14 +1014,18 @@
           console.log("Level 2 start");
           document.getElementById("VersionDisplay").classList.add("hidden");
           helpButton.style.display = "none";
+          document.getElementById("introContainer").style.display = "none";
           startGame(); // Перезапускаем сцену
         } else if (currentLevel === 3) {
           console.log("Level 3 start");
           document.getElementById("VersionDisplay").classList.add("hidden");
           helpButton.style.display = "none";
+          document.getElementById("introContainer").style.display = "none";
           startGame();
         } else if (currentLevel === 4) {
+          document.getElementById("introContainer").style.display = "none";
           console.log("Level 4 start");
+
           // Пока ничего не делаем
         }
       }
@@ -891,6 +1035,7 @@
         document.getElementById("VersionDisplay").classList.remove("hidden");
         // document.getElementById("helpButton").classList.remove("hidden");
         helpButton.style.display = "block";
+        document.getElementById("introContainer").style.display = "block";
 
         enemyTeamMode = false;
         let totalScore = balls.reduce(

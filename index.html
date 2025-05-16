@@ -1080,23 +1080,30 @@
         if (currentLevel === 2) {
           console.log("Level 2 start");
           document.getElementById("VersionDisplay").classList.add("hidden");
-          helpButton.style.display = "none";
-          // clearInterval(introInterval);
+          helpButton.style.display = "none"; // clearInterval(introInterval);
           document.getElementById("introContainer").style.display = "none";
           startGame(); // Перезапускаем сцену
         } else if (currentLevel === 3) {
           console.log("Level 3 start");
           document.getElementById("VersionDisplay").classList.add("hidden");
-          helpButton.style.display = "none";
-          // clearInterval(introInterval);
+          helpButton.style.display = "none"; // clearInterval(introInterval);
           document.getElementById("introContainer").style.display = "none";
-          startGame();
+          startGame(); // Перезапускаем сцену
         } else if (currentLevel === 4) {
-          // clearInterval(introInterval);
+          document.getElementById("VersionDisplay").classList.add("hidden");
+          helpButton.style.display = "none"; // clearInterval(introInterval);
           document.getElementById("introContainer").style.display = "none";
-          console.log("Level 4 start");
-
-          // Пока ничего не делаем
+          startGame(); // Перезапускаем сцену
+        } else if (currentLevel === 5) {
+          document.getElementById("VersionDisplay").classList.add("hidden");
+          helpButton.style.display = "none"; // clearInterval(introInterval);
+          document.getElementById("introContainer").style.display = "none";
+          startGame(); // Перезапускаем сцену
+        } else if (currentLevel === 6) {
+          document.getElementById("VersionDisplay").classList.add("hidden");
+          helpButton.style.display = "none"; // clearInterval(introInterval);
+          document.getElementById("introContainer").style.display = "none";
+          startGame(); // Перезапускаем сцену
         }
       }
 
@@ -1267,7 +1274,10 @@
             if (
               (currentLevel === 1 && unselected.length <= 4) ||
               (currentLevel === 2 && unselected.length <= 6) ||
-              (currentLevel === 3 && unselected.length <= 8)
+              (currentLevel === 3 && unselected.length <= 8) ||
+              (currentLevel === 4 && unselected.length <= 10) ||
+              (currentLevel === 5 && unselected.length <= 12) ||
+              (currentLevel === 6 && unselected.length <= 14)
             ) {
               enemyTeamMode = true;
               console.log("EnemyTeam");

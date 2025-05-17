@@ -19,49 +19,44 @@
         <h2 id="endMessage"></h2>
         <button id="restartBtn">🔁 Сыграть ещё раз</button>
       </div>
-      <!-- Вопрос-кнопка -->
-      <button id="helpButton" class="help-button">?</button>
+    </div>
+    <!-- Кнопка помощи -->
+    <button id="helpBtn" class="help-button">?</button>
 
-      <!-- Модальное окно -->
-      <div id="helpModal" class="modal hidden">
-        <div class="modal-content">
-          <h2>Как играть</h2>
-          <div class="help-grid">
-            <div class="help-item">
+    <!-- Модальное окно -->
+    <div id="modalOverlay" class="modal-overlay hidden">
+      <div class="modal-slider" id="sliderContainer">
+        <div class="slider-content">
+          <div class="slider" id="slider">
+            <!-- Слайды -->
+            <div class="slide">
               <img src="/img/file3.webp" alt="Описание 1" />
-              <p>Выбери 4 любых шара, теперь это твоя команда</p>
+              <p>Выбери 4 любых шара, это твоя команда</p>
             </div>
-            <div class="help-item">
+            <div class="slide">
               <img src="/img/file2.webp" alt="Описание 2" />
-              <p>Команда при столкновении получает бонус HP</p>
+              <p>Команда при касании получает HP</p>
             </div>
-            <div class="help-item">
+            <div class="slide">
               <img src="/img/file4.webp" alt="Описание 3" />
-              <p>
-                Когда шаров остается мало, они объединяются в команду, с каждым
-                уровнем такая команда будет увеличиваться
-              </p>
+              <p>Незавмсмиые шары тоже объединяются в команду</p>
             </div>
-            <div class="help-item">
+            <div class="slide">
               <img src="/img/file1.webp" alt="Описание 4" />
-              <p>
-                Как и твоя команда, они теперь получают бонус HP, но повышенный!
-              </p>
+              <p>Теперь онитоже получают HP</p>
             </div>
-            <div class="help-item">
-              <img src="/img/video1.gif" alt="Описание 5" width="200px" />
+            <div class="slide">
+              <img src="/img/video1.gif" alt="Описание 4" />
               <p>Ты можешь перемещать свои шары в лучшие позиции</p>
-            </div>
-            <div class="help-item">
-              <p class="winer">
-                Слаженная командная работа, залог успеха, удачи!
-              </p>
             </div>
           </div>
         </div>
+        <!-- Навигация -->
+        <button id="prevBtn" class="nav-button">←</button>
+        <button id="nextBtn" class="nav-button">→</button>
+        <button id="closeBtn" class="close-button">Скрыть</button>
       </div>
     </div>
-
     <div id="levelDisplay">Level 1</div>
     <div id="VersionDisplay">"BoomBalls" @IFilkov</div>
 
@@ -86,6 +81,9 @@
         display: block;
         margin: auto;
       }
+      p {
+        font-size: xx-large;
+      }
 
       #ui {
         position: absolute;
@@ -97,70 +95,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-      }
-
-      .help-button {
-        position: absolute;
-        bottom: 0;
-        left: 20px;
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        font-size: 80px;
-        color: red;
-        background-color: #eeeeee00;
-        /* opacity: 0.8; */
-        border: none;
-        cursor: pointer;
-        z-index: 1000;
-        /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); */
-        pointer-events: auto;
-      }
-
-      .modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.6);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 20;
-        pointer-events: auto;
-      }
-
-      .modal-content {
-        background: white;
-        padding: 20px 30px;
-        border-radius: 10px;
-        max-width: 90%;
-        text-align: center;
-      }
-      .help-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 16px;
-        margin-top: 16px;
-      }
-
-      .help-item {
-        text-align: center;
-      }
-
-      .help-grid > .help-item:last-child {
-        grid-column: span 5;
-      }
-
-      .help-item img {
-        max-width: 100%;
-        border-radius: 8px;
-        margin-bottom: 8px;
-      }
-
-      .hidden {
-        display: none;
       }
 
       #startBtn,
@@ -178,7 +112,107 @@
         transition: background 0.3s;
         pointer-events: auto;
       }
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
 
+      .modal-slider {
+        background: white;
+        border-radius: 12px;
+        max-width: 90%;
+        width: 100%;
+        max-height: 90vh;
+        padding: 10px;
+        position: relative;
+        overflow: hidden;
+        box-sizing: border-box;
+      }
+
+      .slider-content {
+        /* display: flex; */
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+      }
+
+      #slider {
+        display: flex;
+        transition: transform 0.3s ease;
+        width: 100%; /* 4 слайда => 4 x 100% */
+      }
+
+      .slide {
+        flex: 0 0 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+      }
+
+      .slide img {
+        width: 100%;
+        height: auto;
+        max-height: 60vh;
+        border-radius: 10px;
+        object-fit: contain;
+      }
+
+      .nav-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(200, 200, 200, 0.8);
+        border: none;
+        padding: 10px;
+        border-radius: 50%;
+        font-size: 20px;
+        cursor: pointer;
+        z-index: 1000;
+      }
+
+      #prevBtn {
+        left: 10px;
+      }
+      #nextBtn {
+        right: 10px;
+      }
+
+      .close-button {
+        margin-top: 10px;
+        background: red;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .help-button {
+        position: fixed;
+        bottom: 16px;
+        left: 16px;
+        background: red;
+        color: white;
+        border-radius: 50%;
+        font-size: 24px;
+        width: 44px;
+        height: 44px;
+        border: none;
+        cursor: pointer;
+        z-index: 1000;
+      }
       #startBtn:hover,
       #restartBtn:hover {
         background: #45a049;
@@ -427,22 +461,23 @@
         // clearInterval(introInterval);
         document.getElementById("introContainer").style.display = "none";
         startBtn.style.display = "none";
-        helpButton.style.display = "none";
+        helpBtn.style.display = "none";
+        // helpBtn.style.display = "none";
         document.getElementById("VersionDisplay").classList.add("hidden");
         isInitialStart = false;
         currentLevel === 1;
         startGame();
       };
 
-      helpButton.onclick = () => {
-        helpButton.style.display = "none";
-        helpModal.classList.remove("hidden");
-      };
+      // helpBtn.onclick = () => {
+      //   helpBtn.style.display = "none";
+      //   helpModal.classList.remove("hidden");
+      // };
 
-      helpModal.onclick = () => {
-        helpButton.style.display = "block";
-        helpModal.classList.add("hidden");
-      };
+      // helpModal.onclick = () => {
+      //   helpBtn.style.display = "block";
+      //   helpModal.classList.add("hidden");
+      // };
 
       function updateLevelDisplay() {
         document.getElementById(
@@ -927,7 +962,7 @@
         newBtn.addEventListener("click", () => {
           document.getElementById("VersionDisplay").classList.add("hidden");
           newBtn.remove();
-          helpButton.style.display = "none";
+          helpBtn.style.display = "none";
           document.getElementById("introContainer").style.display = "none";
           isInitialStart = false;
           currentLevel = 1;
@@ -1072,7 +1107,7 @@
         if (currentLevel === 1) {
           console.log("Level 1 start");
           document.getElementById("VersionDisplay").classList.add("hidden");
-          helpButton.style.display = "none";
+          helpBtn.style.display = "none";
           // clearInterval(introInterval);
           document.getElementById("introContainer").style.display = "none";
           startGame(); // Перезапускаем сцену
@@ -1080,28 +1115,28 @@
         if (currentLevel === 2) {
           console.log("Level 2 start");
           document.getElementById("VersionDisplay").classList.add("hidden");
-          helpButton.style.display = "none"; // clearInterval(introInterval);
+          helpBtn.style.display = "none"; // clearInterval(introInterval);
           document.getElementById("introContainer").style.display = "none";
           startGame(); // Перезапускаем сцену
         } else if (currentLevel === 3) {
           console.log("Level 3 start");
           document.getElementById("VersionDisplay").classList.add("hidden");
-          helpButton.style.display = "none"; // clearInterval(introInterval);
+          helpBtn.style.display = "none"; // clearInterval(introInterval);
           document.getElementById("introContainer").style.display = "none";
           startGame(); // Перезапускаем сцену
         } else if (currentLevel === 4) {
           document.getElementById("VersionDisplay").classList.add("hidden");
-          helpButton.style.display = "none"; // clearInterval(introInterval);
+          helpBtn.style.display = "none"; // clearInterval(introInterval);
           document.getElementById("introContainer").style.display = "none";
           startGame(); // Перезапускаем сцену
         } else if (currentLevel === 5) {
           document.getElementById("VersionDisplay").classList.add("hidden");
-          helpButton.style.display = "none"; // clearInterval(introInterval);
+          helpBtn.style.display = "none"; // clearInterval(introInterval);
           document.getElementById("introContainer").style.display = "none";
           startGame(); // Перезапускаем сцену
         } else if (currentLevel === 6) {
           document.getElementById("VersionDisplay").classList.add("hidden");
-          helpButton.style.display = "none"; // clearInterval(introInterval);
+          helpBtn.style.display = "none"; // clearInterval(introInterval);
           document.getElementById("introContainer").style.display = "none";
           startGame(); // Перезапускаем сцену
         }
@@ -1110,8 +1145,8 @@
       function gameOver(result) {
         // document.getElementById("VersionDisplay").classList.remove("hidden");
         document.getElementById("VersionDisplay").classList.remove("hidden");
-        // document.getElementById("helpButton").classList.remove("hidden");
-        helpButton.style.display = "block";
+        // document.getElementById("helpBtn").classList.remove("hidden");
+        helpBtn.style.display = "block";
         document.getElementById("introContainer").style.display = "block";
 
         enemyTeamMode = false;
@@ -1461,7 +1496,90 @@
           }
         }
       }
+      const helpBtn = document.getElementById("helpBtn");
+      const modalOverlay = document.getElementById("modalOverlay");
+      const closeBtn = document.getElementById("closeBtn");
+      const slider = document.getElementById("slider");
+      const slides = slider.querySelectorAll(".slide");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
 
+      let currentSlide = 0;
+
+      function updateSlider() {
+        slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+      }
+
+      helpBtn.addEventListener("click", () => {
+        helpBtn.classList.add("hidden");
+        helpBtn.style.display = "none";
+        modalOverlay.classList.remove("hidden");
+        updateSlider();
+      });
+
+      closeBtn.addEventListener("click", () => {
+        modalOverlay.classList.add("hidden");
+        helpBtn.style.display = "block";
+      });
+
+      modalOverlay.addEventListener("click", (e) => {
+        if (e.target === modalOverlay) {
+          modalOverlay.classList.remove("hidden");
+          helpBtn.style.display = "none";
+        }
+      });
+
+      prevBtn.addEventListener("click", () => {
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        updateSlider();
+      });
+
+      nextBtn.addEventListener("click", () => {
+        currentSlide = (currentSlide + 1) % slides.length;
+        updateSlider();
+      });
+
+      // Свайпы для мобильных
+      let startX = 0;
+      let endX = 0;
+      const swipeThreshold = 50;
+
+      slider.addEventListener(
+        "touchstart",
+        (e) => {
+          startX = e.touches[0].clientX;
+        },
+        { passive: true }
+      );
+
+      slider.addEventListener(
+        "touchmove",
+        (e) => {
+          endX = e.touches[0].clientX;
+        },
+        { passive: true }
+      );
+
+      slider.addEventListener("touchend", () => {
+        const deltaX = endX - startX;
+        if (Math.abs(deltaX) > swipeThreshold) {
+          if (deltaX > 0) {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+          } else {
+            currentSlide = (currentSlide + 1) % slides.length;
+          }
+          updateSlider();
+        }
+        startX = endX = 0;
+      });
+      // Клик вне слайдера закрывает модалку
+      modalOverlay.addEventListener("click", (e) => {
+        if (e.target === modalOverlay) {
+          helpBtn.classList.remove("hidden");
+          helpBtn.style.display = "block";
+          modalOverlay.classList.add("hidden");
+        }
+      });
       spawnBalls();
       gameLoop();
       canvas.addEventListener("click", handleClick);

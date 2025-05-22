@@ -424,22 +424,69 @@
 
       const countdownEl = document.getElementById("countdown");
       let selectionEnabled = true;
-      let MAX_SELECTION = 3;
+      let MAX_SELECTION = 4;
 
+      // function startCountdown() {
+      //   let count = 9;
+      //   countdownEl.textContent = count;
+      //   countdownEl.classList.remove("hidden");
+
+      //   selectionEnabled = true; // ✅ Включаем выбор один раз
+
+      //   const interval = setInterval(() => {
+      //     count--;
+      //     if (count >= 0) {
+      //       countdownEl.textContent = count;
+      //     } else {
+      //       clearInterval(interval);
+      //       countdownEl.textContent = "";
+      //       selectionEnabled = false; // ✅ Отключаем выбор после окончания
+      //       console.log("⏳ Время выбора команды истекло!");
+      //     }
+      //   }, 1000);
+      // }
       function startCountdown() {
         let count = 9;
         countdownEl.textContent = count;
         countdownEl.classList.remove("hidden");
 
+        selectionEnabled = true;
+
         const interval = setInterval(() => {
           count--;
           if (count >= 0) {
             countdownEl.textContent = count;
-          } else {
+          }
+
+          if (count < 0) {
             clearInterval(interval);
-            countdownEl.classList.add("hidden");
-            selectionEnabled = false; // запрет выбора
+            countdownEl.textContent = "";
+            selectionEnabled = false;
+
             console.log("⏳ Время выбора команды истекло!");
+
+            // 🔎 Считаем сколько уже выбрал игрок
+            const alreadySelected = playerSelectedBalls.length;
+            const needed = MAX_SELECTION - alreadySelected;
+
+            if (needed > 0) {
+              const unselected = balls.filter(
+                (b) => !b.selectedByPlayer && b.hp > 0
+              );
+
+              for (let i = 0; i < needed && i < unselected.length; i++) {
+                const ball = unselected[i];
+                ball.selectedByPlayer = true;
+                playerSelectedBalls.push(ball);
+                ball.activateAura(); // визуальный эффект
+                console.log(`⚙️ Автоматически выбран шар ID: ${ball.id}`);
+              }
+            }
+
+            console.log(
+              "📋 Итог: выбранные шары:",
+              playerSelectedBalls.map((b) => b.id)
+            );
           }
         }, 1000);
       }
@@ -748,9 +795,39 @@
 
       let startTime = Date.now();
 
+      // canvas.addEventListener("click", (e) => {
+      //   // if (!selectionEnabled) return; // запрет по таймеру
+      //   // if (selectedBalls.length >= MAX_SELECTION) return; // Строго 4 шара
+      //   if (!selectionEnabled || selectedBalls.length >= MAX_SELECTION) return;
+
+      //   // handleSelection(e.clientX, e.clientY);
+
+      //   const rect = canvas.getBoundingClientRect();
+      //   const mouseX = e.clientX - rect.left;
+      //   const mouseY = e.clientY - rect.top;
+
+      //   for (const ball of balls) {
+      //     if (ball.hp <= 0 || ball.selectedByPlayer) continue;
+
+      //     const dx = mouseX - ball.x;
+      //     const dy = mouseY - ball.y;
+      //     if (Math.sqrt(dx * dx + dy * dy) < ball.radius) {
+      //       ball.selectedByPlayer = true;
+      //       // selectedBalls.push(ball);
+      //       playerSelectedBalls.push(ball);
+
+      //       // Вернём масштаб обратно через 0.6 секунды
+      //       setTimeout(() => {
+      //         ball.targetScale = 1;
+      //       }, 600);
+      //       console.log("✅ Выбран шар", ball.id);
+      //       break;
+      //     }
+      //   }
+      // });
       canvas.addEventListener("click", (e) => {
-        if (selectedBalls.length >= MAX_SELECTION) return; // Строго 4 шара
-        handleSelection(e.clientX, e.clientY);
+        if (!selectionEnabled || playerSelectedBalls.length >= MAX_SELECTION)
+          return;
 
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
@@ -761,30 +838,30 @@
 
           const dx = mouseX - ball.x;
           const dy = mouseY - ball.y;
-          if (Math.sqrt(dx * dx + dy * dy) < ball.radius) {
-            ball.selectedByPlayer = true;
-            selectedBalls.push(ball);
+          const distance = Math.sqrt(dx * dx + dy * dy);
 
-            // Вернём масштаб обратно через 0.6 секунды
-            setTimeout(() => {
-              ball.targetScale = 1;
-            }, 600);
-            console.log("✅ Выбран шар", ball.id);
+          if (distance < ball.radius + 10) {
+            ball.selectedByPlayer = true;
+            playerSelectedBalls.push(ball); // используем один массив
+            ball.activateAura();
+            ball.targetScale = 1.6;
+            setTimeout(() => (ball.targetScale = 1), 200);
+            console.log(`👆 Выбран вручную: ${ball.id}`);
             break;
           }
         }
       });
 
       canvas.addEventListener("touchstart", (e) => {
-        if (selectedBalls.length >= 2) return; // Строго 4 шара
         // if (Date.now() - startTime > 4000) return; // Только первые 4 секунды
         // if (selectedBalls.length >= MAX_SELECTION) return; // Строго 4 шара
+        if (!selectionEnabled || selectedBalls.length >= MAX_SELECTION) return;
 
         const rect = canvas.getBoundingClientRect();
         const touch = e.touches[0];
         const touchX = touch.clientX - rect.left;
         const touchY = touch.clientY - rect.top;
-        handleSelection(touch.clientX, touch.clientY);
+        // handleSelection(touch.clientX, touch.clientY);
         handleBallSelection(touchX, touchY);
 
         for (const ball of balls) {
@@ -794,7 +871,8 @@
           const dy = mouseY - ball.y;
           if (Math.sqrt(dx * dx + dy * dy) < ball.radius) {
             ball.selectedByPlayer = true;
-            selectedBalls.push(ball);
+            // selectedBalls.push(ball);
+            playerSelectedBalls.push(ball);
 
             // Вернём масштаб обратно через 0.6 секунды
             setTimeout(() => {
@@ -947,6 +1025,7 @@
 
         spawnBalls();
         enemyTeamMode = false;
+        // selectionEnabled = false;
         selectionPhase = true;
         selectionTimer = 240;
         roundActive = false;
@@ -996,7 +1075,9 @@
 
         newBtn.addEventListener("click", () => {
           startCountdown();
-          MAX_SELECTION = 2;
+          if (!selectionEnabled || selectedBalls.length >= MAX_SELECTION)
+            return;
+          MAX_SELECTION = 4;
           document.getElementById("VersionDisplay").classList.add("hidden");
           newBtn.remove();
           helpBtn.style.display = "none";
@@ -1045,6 +1126,9 @@
       }
 
       function handleBallSelection(x, y) {
+        if (!selectionEnabled || selectedBalls.length >= MAX_SELECTION) return;
+
+        console.log("Я вызываюсь?");
         // if (Date.now() - startTime > 4000) return;
 
         const selectedCount = balls.filter(
@@ -1069,27 +1153,18 @@
       }
 
       function checkGameState() {
-        const aliveBalls = balls.filter((b) => b.hp > 0);
-        /* console.clear();*/
-        balls.forEach((b) => {
-          const status = b.hp > 0 ? "Живой" : "Мертвый";
-          // console.log(`ID: ${b.id}, Очки: ${b.score}, Статус: ${status}`);
-        });
+        console.log("checkGameState");
+        // const aliveBalls = balls.filter((b) => b.hp > 0);
+        // /* console.clear();*/
+        // balls.forEach((b) => {
+        //   const status = b.hp > 0 ? "Живой" : "Мертвый";
+        //   // console.log(`ID: ${b.id}, Очки: ${b.score}, Статус: ${status}`);
+        // });
 
-        const onlySelectedAlive = aliveBalls.every((b) => b.selectedByPlayer);
-        const onlyEnemyTeamAlive = aliveBalls.every(
-          (b) => !b.selectedByPlayer && enemyTeamMode
-        );
-
-        // if (onlySelectedAlive && aliveBalls.length > 0) {
-        //   console.log("🎉 Победа игрока! Остались только выбранные шары.");
-        //   gameOver("win");
-        //   // showEndScreen();
-        //   startGame();
-        // } else if (onlyEnemyTeamAlive && aliveBalls.length > 0) {
-        //   console.log("💀 Поражение! Остались только вражеские шары.");
-        //   gameOver("lose");
-        // showEndScreen();
+        // const onlySelectedAlive = aliveBalls.every((b) => b.selectedByPlayer);
+        // const onlyEnemyTeamAlive = aliveBalls.every(
+        //   (b) => !b.selectedByPlayer && enemyTeamMode
+        // );
       }
 
       function showEndScreen() {
@@ -1131,6 +1206,9 @@
         document.body.appendChild(btn);
 
         btn.addEventListener("click", () => {
+          if (!selectionEnabled || selectedBalls.length >= MAX_SELECTION)
+            return;
+
           document.body.removeChild(btn);
           startGame(); // Функция перезапуска всей игры
         });
@@ -1141,7 +1219,7 @@
       function nextLevel() {
         // currentLevel++;
         if (currentLevel === 1) {
-          MAX_SELECTION = 2;
+          // MAX_SELECTION = 2;
           // console.log("Level 1 start");
           document.getElementById("VersionDisplay").classList.add("hidden");
           helpBtn.style.display = "none";
@@ -1267,22 +1345,22 @@
         document.body.appendChild(messageDiv);
       }
 
-      function checkVictoryOrDefeat() {
-        const aliveBalls = balls.filter((b) => b.hp > 0);
+      // function checkVictoryOrDefeat() {
+      //   const aliveBalls = balls.filter((b) => b.hp > 0);
 
-        const onlySelectedAlive = aliveBalls.every((b) => b.selectedByPlayer);
-        const onlyEnemyTeamAlive = aliveBalls.every(
-          (b) => !b.selectedByPlayer && enemyTeamMode
-        );
+      //   const onlySelectedAlive = aliveBalls.every((b) => b.selectedByPlayer);
+      //   const onlyEnemyTeamAlive = aliveBalls.every(
+      //     (b) => !b.selectedByPlayer && enemyTeamMode
+      //   );
 
-        if (onlySelectedAlive && aliveBalls.length > 0) {
-          console.log("🎉 Победа игрока! Остались только выбранные шары.");
-          gameOver("win");
-        } else if (onlyEnemyTeamAlive && aliveBalls.length > 0) {
-          console.log("💀 Поражение! Остались только вражеские шары.");
-          gameOver("lose");
-        }
-      }
+      //   if (onlySelectedAlive && aliveBalls.length > 0) {
+      //     console.log("🎉 Победа игрока! Остались только выбранные шары.");
+      //     gameOver("win");
+      //   } else if (onlyEnemyTeamAlive && aliveBalls.length > 0) {
+      //     console.log("💀 Поражение! Остались только вражеские шары.");
+      //     gameOver("lose");
+      //   }
+      // }
 
       function resolveCollision(ball1, ball2) {
         if (ball1.isDragging || ball2.isDragging) {
@@ -1440,12 +1518,57 @@
           ball1.spreadTimer = 60;
           ball2.spreadTimer = 60;
         }
-        const aliveBalls = balls.filter((b) => b.hp > 0);
+        // const aliveBalls = balls.filter((b) => b.hp > 0);
 
+        // const onlySelectedAlive = aliveBalls.every((b) => b.selectedByPlayer);
+        // const onlyEnemyTeamAlive = aliveBalls.every(
+        //   (b) => !b.selectedByPlayer && enemyTeamMode
+        // );
+
+        // if (onlySelectedAlive && aliveBalls.length > 0) {
+        //   console.log("🎉 Победа игрока! Остались только выбранные шары.");
+        //   gameOver("win");
+        // } else if (onlyEnemyTeamAlive && aliveBalls.length > 0) {
+        //   console.log("💀 Поражение! Остались только вражеские шары.");
+        //   gameOver("lose");
+        // } else if (aliveBalls.length === 0) {
+        //   console.log("🤝 Ничья! Все шары уничтожены.");
+        //   gameOver("draw");
+        // }
+        // const aliveBalls = balls.filter((b) => b.hp > 0);
+        // const onlySelectedAlive = aliveBalls.every((b) => b.selectedByPlayer);
+        // const onlyEnemyTeamAlive = aliveBalls.every(
+        //   (b) => !b.selectedByPlayer && enemyTeamMode
+        // );
+
+        // // 🔥 Новая проверка: если все выбранные игроком мертвы — поражение
+        // const anySelectedAlive = aliveBalls.some((b) => b.selectedByPlayer);
+        // if (!anySelectedAlive && playerSelectedBalls.length > 0) {
+        //   console.log("❌ Все выбранные игроком шары погибли.");
+        //   gameOver("lose");
+        //   return;
+        // }
+
+        // if (onlySelectedAlive && aliveBalls.length > 0) {
+        //   console.log("🎉 Победа игрока! Остались только выбранные шары.");
+        //   gameOver("win");
+        // } else if (onlyEnemyTeamAlive && aliveBalls.length > 0) {
+        //   console.log("💀 Поражение! Остались только вражеские шары.");
+        //   gameOver("lose");
+        // }
+        const aliveBalls = balls.filter((b) => b.hp > 0);
         const onlySelectedAlive = aliveBalls.every((b) => b.selectedByPlayer);
         const onlyEnemyTeamAlive = aliveBalls.every(
           (b) => !b.selectedByPlayer && enemyTeamMode
         );
+        const anySelectedAlive = aliveBalls.some((b) => b.selectedByPlayer);
+
+        // 🔥 Новая проверка — если все выбранные игроком мертвы
+        if (!anySelectedAlive && playerSelectedBalls.length > 0) {
+          console.log("❌ Все выбранные игроком шары погибли.");
+          gameOver("lose");
+          return;
+        }
 
         if (onlySelectedAlive && aliveBalls.length > 0) {
           console.log("🎉 Победа игрока! Остались только выбранные шары.");
@@ -1453,12 +1576,9 @@
         } else if (onlyEnemyTeamAlive && aliveBalls.length > 0) {
           console.log("💀 Поражение! Остались только вражеские шары.");
           gameOver("lose");
-        } else if (aliveBalls.length === 0) {
-          console.log("🤝 Ничья! Все шары уничтожены.");
-          gameOver("draw");
         }
 
-        checkGameState();
+        // checkGameState();
       }
 
       function regroupToCenter() {
@@ -1500,6 +1620,10 @@
       }
 
       function handleSelection(clientX, clientY) {
+        if (!selectionEnabled || selectedBalls.length >= MAX_SELECTION) return;
+
+        // if (!selectionEnabled) return; // запрет по таймеру
+        console.log("comon");
         const rect = canvas.getBoundingClientRect();
         const x = clientX - rect.left;
         const y = clientY - rect.top;
@@ -1509,6 +1633,7 @@
           //   continue;
           const dx = x - ball.x;
           const dy = y - ball.y;
+
           if (Math.hypot(dx, dy) < ball.baseRadius * 1.5) {
             ball.selectedByPlayer = true;
             ball.targetScale = 2;
@@ -1523,6 +1648,8 @@
       }
 
       function handleClick(event) {
+        if (!selectionEnabled || selectedBalls.length >= MAX_SELECTION) return;
+
         // console.log("hendle");
         const rect = canvas.getBoundingClientRect();
         const clickX = event.clientX - rect.left;
@@ -1635,6 +1762,8 @@
       gameLoop();
       canvas.addEventListener("click", handleClick);
       window.addEventListener("load", () => {
+        // if (!selectionEnabled || selectedBalls.length >= MAX_SELECTION) return;
+
         isInitialStart = false;
         startGame();
       });

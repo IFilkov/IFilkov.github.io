@@ -425,6 +425,7 @@
       const countdownEl = document.getElementById("countdown");
       let selectionEnabled = true;
       let MAX_SELECTION = 4;
+      let baseBallCount = 16; // стартовое количество
 
       // function startCountdown() {
       //   let count = 9;
@@ -759,7 +760,7 @@
       const types = ["A", "B", "D", "G"];
       let balls = [];
 
-      function spawnBalls(n = 16) {
+      function spawnBalls(n = baseBallCount) {
         balls = [];
         for (let i = 0; i < n; i++) {
           const type = types[i % types.length];
@@ -1078,6 +1079,7 @@
           if (!selectionEnabled || selectedBalls.length >= MAX_SELECTION)
             return;
           MAX_SELECTION = 4;
+          baseBallCount = 16;
           document.getElementById("VersionDisplay").classList.add("hidden");
           newBtn.remove();
           helpBtn.style.display = "none";
@@ -1219,7 +1221,9 @@
       function nextLevel() {
         // currentLevel++;
         if (currentLevel === 1) {
-          // MAX_SELECTION = 2;
+          baseBallCount === 16;
+
+          MAX_SELECTION = 4;
           // console.log("Level 1 start");
           document.getElementById("VersionDisplay").classList.add("hidden");
           helpBtn.style.display = "none";
@@ -1228,6 +1232,7 @@
           startGame(); // Перезапускаем сцену
         }
         if (currentLevel === 2) {
+          baseBallCount += 4; // ← вот тут добавляем новых шаров
           MAX_SELECTION = 6;
           startCountdown();
           // console.log("Level 2 start");
@@ -1236,6 +1241,8 @@
           document.getElementById("introContainer").style.display = "none";
           startGame(); // Перезапускаем сцену
         } else if (currentLevel === 3) {
+          baseBallCount += 8; // ← вот тут добавляем новых шаров
+          MAX_SELECTION = 8;
           startCountdown();
           // console.log("Level 3 start");
           document.getElementById("VersionDisplay").classList.add("hidden");
@@ -1243,18 +1250,24 @@
           document.getElementById("introContainer").style.display = "none";
           startGame(); // Перезапускаем сцену
         } else if (currentLevel === 4) {
+          baseBallCount += 8; // ← вот тут добавляем новых шаров
+          MAX_SELECTION = 8;
           startCountdown();
           document.getElementById("VersionDisplay").classList.add("hidden");
           helpBtn.style.display = "none"; // clearInterval(introInterval);
           document.getElementById("introContainer").style.display = "none";
           startGame(); // Перезапускаем сцену
         } else if (currentLevel === 5) {
+          baseBallCount += 16; // ← вот тут добавляем новых шаров
+          MAX_SELECTION = 8;
           startCountdown();
           document.getElementById("VersionDisplay").classList.add("hidden");
           helpBtn.style.display = "none"; // clearInterval(introInterval);
           document.getElementById("introContainer").style.display = "none";
           startGame(); // Перезапускаем сцену
         } else if (currentLevel === 6) {
+          baseBallCount += 24; // ← вот тут добавляем новых шаров
+          MAX_SELECTION = 10;
           startCountdown();
           document.getElementById("VersionDisplay").classList.add("hidden");
           helpBtn.style.display = "none"; // clearInterval(introInterval);

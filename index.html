@@ -1124,6 +1124,7 @@
         console.log(`💀 Поражение! Очки: ${totalScore}`);
         const top = Math.max(localStorage.getItem("TopScore") || 0, totalScore);
         localStorage.setItem("TopScore", top);
+        stopGame();
         restartGame();
       }
 
@@ -1320,6 +1321,7 @@
         } else if (result === "lose") {
           // console.log(`💀 Поражение! Очки: ${totalScore}`);
           handleLoss();
+
           ctx.fillStyle = "red";
           ctx.font = "20px Arial";
           ctx.fillText(
@@ -1358,6 +1360,154 @@
         document.body.appendChild(messageDiv);
       }
 
+      function resolveCollision(ball1, ball2) {
+        if (ball1.isDragging || ball2.isDragging) return;
+        if (ball1.hp <= 0 || ball2.hp <= 0) return;
+
+        const dx = ball2.x - ball1.x;
+        const dy = ball2.y - ball1.y;
+        const distance = Math.hypot(dx, dy);
+
+        // --- Поведение выбранных шаров (без урона, отталкивание, аура) ---
+        if (ball1.selectedByPlayer && ball2.selectedByPlayer) {
+          if (distance < ball1.baseRadius + ball2.baseRadius) {
+            const angle = Math.atan2(dy, dx);
+            const force = 3;
+
+            ball1.dx = -Math.cos(angle) * force;
+            ball1.dy = -Math.sin(angle) * force;
+            ball2.dx = Math.cos(angle) * force;
+            ball2.dy = Math.sin(angle) * force;
+
+            ball1.mode = "spread";
+            ball2.mode = "spread";
+            ball1.spreadTimer = 60;
+            ball2.spreadTimer = 60;
+
+            ball1.hp = Math.min(ball1.hp + 20, 200);
+            ball2.hp = Math.min(ball2.hp + 20, 200);
+
+            ball1.activateAura();
+            ball2.activateAura();
+
+            console.log(
+              `Выбранные шары оттолкнулись и восстановили HP: ${ball1.id}, ${ball2.id}`
+            );
+          }
+          return;
+        }
+
+        if (distance < ball1.baseRadius + ball2.baseRadius) {
+          // --- EnemyTeam режим ---
+          if (!enemyTeamMode) {
+            const unselected = balls.filter(
+              (b) => !b.selectedByPlayer && b.hp > 0
+            );
+            const thresholds = [4, 6, 8, 10, 12, 14];
+            if (
+              currentLevel <= thresholds.length &&
+              unselected.length <= thresholds[currentLevel - 1]
+            ) {
+              enemyTeamMode = true;
+              console.log("EnemyTeam");
+            }
+          }
+
+          // --- Поведение EnemyTeam: исцеление и отталкивание ---
+          if (
+            enemyTeamMode &&
+            !ball1.selectedByPlayer &&
+            !ball2.selectedByPlayer
+          ) {
+            const angle = Math.atan2(dy, dx);
+            const force = 3;
+
+            ball1.dx = -Math.cos(angle) * force;
+            ball1.dy = -Math.sin(angle) * force;
+            ball2.dx = Math.cos(angle) * force;
+            ball2.dy = Math.sin(angle) * force;
+
+            ball1.mode = "spread";
+            ball2.mode = "spread";
+            ball1.spreadTimer = 60;
+            ball2.spreadTimer = 60;
+
+            ball1.auraColor = "purple";
+            ball2.auraColor = "purple";
+            ball1.auraTimer = 240;
+            ball2.auraTimer = 240;
+
+            ball1.hp = Math.min(ball1.hp + 40, 200);
+            ball2.hp = Math.min(ball2.hp + 40, 200);
+
+            return;
+          }
+
+          // --- Отталкивание — происходит всегда ---
+          const angle = Math.atan2(dy, dx);
+          const force = 3;
+
+          ball1.dx = -Math.cos(angle) * force;
+          ball1.dy = -Math.sin(angle) * force;
+          ball2.dx = Math.cos(angle) * force;
+          ball2.dy = Math.sin(angle) * force;
+
+          ball1.mode = "spread";
+          ball2.mode = "spread";
+          ball1.spreadTimer = 60;
+          ball2.spreadTimer = 60;
+
+          // --- Урон и очки — только после выбора команды ---
+          if (!selectionEnabled) {
+            const damage = Math.floor(Math.random() * 20) + 5;
+            ball1.hp = Math.max(0, ball1.hp - damage);
+            ball2.hp = Math.max(0, ball2.hp - damage);
+
+            ball1.collisionSurvived = (ball1.collisionSurvived || 0) + 1;
+            ball2.collisionSurvived = (ball2.collisionSurvived || 0) + 1;
+
+            checkSelectedBallSurvival(ball1);
+            checkSelectedBallSurvival(ball2);
+
+            ball1.score += 1;
+            ball2.score += 1;
+
+            if (ball1.hp <= 0) ball1.hp = 0;
+            if (ball2.hp <= 0) ball2.hp = 0;
+
+            if (ball1.score > ball2.score) {
+              ball1.baseRadius += 1;
+            } else if (ball2.score > ball1.score) {
+              ball2.baseRadius += 1;
+            }
+
+            // --- Победа/поражение игрока ---
+            const aliveBalls = balls.filter((b) => b.hp > 0);
+            const onlySelectedAlive = aliveBalls.every(
+              (b) => b.selectedByPlayer
+            );
+            const onlyEnemyTeamAlive = aliveBalls.every(
+              (b) => !b.selectedByPlayer && enemyTeamMode
+            );
+            const anySelectedAlive = aliveBalls.some((b) => b.selectedByPlayer);
+
+            if (!anySelectedAlive && playerSelectedBalls.length > 0) {
+              console.log("❌ Все выбранные игроком шары погибли.");
+              gameOver("lose");
+              return;
+            }
+
+            if (onlySelectedAlive && aliveBalls.length > 0) {
+              console.log("🎉 Победа игрока! Остались только выбранные шары.");
+              gameOver("win");
+            } else if (onlyEnemyTeamAlive && aliveBalls.length > 0) {
+              console.log("💀 Поражение! Остались только вражеские шары.");
+              gameOver("lose");
+            }
+          }
+        }
+      }
+
       // function checkVictoryOrDefeat() {
       //   const aliveBalls = balls.filter((b) => b.hp > 0);
 
@@ -1375,224 +1525,179 @@
       //   }
       // }
 
-      function resolveCollision(ball1, ball2) {
-        if (ball1.isDragging || ball2.isDragging) {
-          return; // Пропускаем столкновение, если один из шаров перетаскивается
-        }
-        if (ball1.hp <= 0 || ball2.hp <= 0) return;
+      // function resolveCollision(ball1, ball2) {
+      //   if (ball1.isDragging || ball2.isDragging) {
+      //     return; // Пропускаем столкновение, если один из шаров перетаскивается
+      //   }
+      //   if (ball1.hp <= 0 || ball2.hp <= 0) return;
 
-        // --- Новая логика для двух выбранных ---
-        if (ball1.selectedByPlayer && ball2.selectedByPlayer) {
-          // --- Специальное поведение для двух выбранных шаров ---
-          if (ball1.selectedByPlayer && ball2.selectedByPlayer) {
-            // Отталкивание без урона, +10hp
-            // ball1.auraTimer = 240; // 4 секунды, если 60 FPS
-            // ball2.auraTimer = 240;
-            // Проверка на дистанцию как обычно
-            const dx = ball2.x - ball1.x;
-            const dy = ball2.y - ball1.y;
-            const distance = Math.hypot(dx, dy);
-            // const minDistance = ball2.basebaseRadius + ball1.basebaseRadius;
+      //   // --- Новая логика для двух выбранных ---
+      //   if (ball1.selectedByPlayer && ball2.selectedByPlayer) {
+      //     // --- Специальное поведение для двух выбранных шаров ---
+      //     if (ball1.selectedByPlayer && ball2.selectedByPlayer) {
+      //       // Проверка на дистанцию как обычно
+      //       const dx = ball2.x - ball1.x;
+      //       const dy = ball2.y - ball1.y;
+      //       const distance = Math.hypot(dx, dy);
+      //       // const minDistance = ball2.basebaseRadius + ball1.basebaseRadius;
 
-            // return distance < minDistance;
+      //       // return distance < minDistance;
 
-            if (distance < ball1.baseRadius + ball2.baseRadius) {
-              const angle = Math.atan2(dy, dx);
-              const force = 3;
+      //       if (distance < ball1.baseRadius + ball2.baseRadius) {
+      //         const angle = Math.atan2(dy, dx);
+      //         const force = 3;
 
-              ball1.dx = -Math.cos(angle) * force;
-              ball1.dy = -Math.sin(angle) * force;
-              ball2.dx = Math.cos(angle) * force;
-              ball2.dy = Math.sin(angle) * force;
+      //         ball1.dx = -Math.cos(angle) * force;
+      //         ball1.dy = -Math.sin(angle) * force;
+      //         ball2.dx = Math.cos(angle) * force;
+      //         ball2.dy = Math.sin(angle) * force;
 
-              ball1.mode = "spread";
-              ball2.mode = "spread";
-              ball1.spreadTimer = 60;
-              ball2.spreadTimer = 60;
+      //         ball1.mode = "spread";
+      //         ball2.mode = "spread";
+      //         ball1.spreadTimer = 60;
+      //         ball2.spreadTimer = 60;
 
-              // Прибавляем здоровье (максимум 100)
-              ball1.hp = Math.min(ball1.hp + 20, 200);
-              ball2.hp = Math.min(ball2.hp + 20, 200);
+      //         // Прибавляем здоровье (максимум 100)
+      //         ball1.hp = Math.min(ball1.hp + 20, 200);
+      //         ball2.hp = Math.min(ball2.hp + 20, 200);
 
-              ball1.activateAura(); // Включаем жёлтую ауру
-              ball2.activateAura();
+      //         ball1.activateAura(); // Включаем жёлтую ауру
+      //         ball2.activateAura();
 
-              console.log(
-                `Выбранные шары оттолкнулись и восстановили HP: ${ball1.id}, ${ball2.id}`
-              );
-            }
-            // ball1.activateAura(); // Включаем жёлтую ауру
-            // ball2.activateAura();
-            return; // Завершаем, т.к. обычное столкновение не нужно
-          }
+      //         console.log(
+      //           `Выбранные шары оттолкнулись и восстановили HP: ${ball1.id}, ${ball2.id}`
+      //         );
+      //       }
 
-          return;
-        }
-        // Расстояние между центрами
-        const dx = ball2.x - ball1.x;
-        const dy = ball2.y - ball1.y;
-        const distance = Math.hypot(dx, dy);
+      //       return; // Завершаем, т.к. обычное столкновение не нужно
+      //     }
 
-        // if (ball1.selectedByPlayer && ball2.selectedByPlayer) {
-        //   return; // Помеченные шары не сталкиваются между собой
-        // }
+      //     return;
+      //   }
+      //   // Расстояние между центрами
+      //   const dx = ball2.x - ball1.x;
+      //   const dy = ball2.y - ball1.y;
+      //   const distance = Math.hypot(dx, dy);
 
-        if (distance < ball1.baseRadius + ball2.baseRadius) {
-          // === EnemyTeam режим ===
-          if (!enemyTeamMode) {
-            const unselected = balls.filter(
-              (b) => !b.selectedByPlayer && b.hp > 0
-            );
-            if (
-              (currentLevel === 1 && unselected.length <= 4) ||
-              (currentLevel === 2 && unselected.length <= 6) ||
-              (currentLevel === 3 && unselected.length <= 8) ||
-              (currentLevel === 4 && unselected.length <= 10) ||
-              (currentLevel === 5 && unselected.length <= 12) ||
-              (currentLevel === 6 && unselected.length <= 14)
-            ) {
-              enemyTeamMode = true;
-              console.log("EnemyTeam");
-            }
-          }
+      //   if (distance < ball1.baseRadius + ball2.baseRadius) {
+      //     // === EnemyTeam режим ===
+      //     if (!enemyTeamMode) {
+      //       const unselected = balls.filter(
+      //         (b) => !b.selectedByPlayer && b.hp > 0
+      //       );
+      //       if (
+      //         (currentLevel === 1 && unselected.length <= 4) ||
+      //         (currentLevel === 2 && unselected.length <= 6) ||
+      //         (currentLevel === 3 && unselected.length <= 8) ||
+      //         (currentLevel === 4 && unselected.length <= 10) ||
+      //         (currentLevel === 5 && unselected.length <= 12) ||
+      //         (currentLevel === 6 && unselected.length <= 14)
+      //       ) {
+      //         enemyTeamMode = true;
+      //         console.log("EnemyTeam");
+      //       }
+      //     }
 
-          // === EnemyTeam поведение: отталкивание + исцеление ===
-          if (
-            enemyTeamMode &&
-            !ball1.selectedByPlayer &&
-            !ball2.selectedByPlayer &&
-            distance < ball1.baseRadius + ball2.baseRadius
-          ) {
-            const angle = Math.atan2(dy, dx);
-            const force = 3;
+      //     // === EnemyTeam поведение: отталкивание + исцеление ===
+      //     if (
+      //       enemyTeamMode &&
+      //       !ball1.selectedByPlayer &&
+      //       !ball2.selectedByPlayer &&
+      //       distance < ball1.baseRadius + ball2.baseRadius
+      //     ) {
+      //       const angle = Math.atan2(dy, dx);
+      //       const force = 3;
 
-            ball1.dx = -Math.cos(angle) * force;
-            ball1.dy = -Math.sin(angle) * force;
-            ball2.dx = Math.cos(angle) * force;
-            ball2.dy = Math.sin(angle) * force;
+      //       ball1.dx = -Math.cos(angle) * force;
+      //       ball1.dy = -Math.sin(angle) * force;
+      //       ball2.dx = Math.cos(angle) * force;
+      //       ball2.dy = Math.sin(angle) * force;
 
-            ball1.mode = "spread";
-            ball2.mode = "spread";
-            ball1.spreadTimer = 60;
-            ball2.spreadTimer = 60;
+      //       ball1.mode = "spread";
+      //       ball2.mode = "spread";
+      //       ball1.spreadTimer = 60;
+      //       ball2.spreadTimer = 60;
 
-            ball1.auraColor = "purple";
-            ball2.auraColor = "purple";
-            ball1.auraTimer = 240; // 4 секунды
-            ball2.auraTimer = 240;
+      //       ball1.auraColor = "purple";
+      //       ball2.auraColor = "purple";
+      //       ball1.auraTimer = 240; // 4 секунды
+      //       ball2.auraTimer = 240;
 
-            ball1.hp = Math.min(ball1.hp + 40, 200);
-            ball2.hp = Math.min(ball2.hp + 40, 200);
+      //       ball1.hp = Math.min(ball1.hp + 40, 200);
+      //       ball2.hp = Math.min(ball2.hp + 40, 200);
 
-            return;
-          }
+      //       return;
+      //     }
 
-          // --- Урон ---
-          const damage = Math.floor(Math.random() * 20) + 5; // от 5 до 25
-          ball1.hp -= damage;
-          ball2.hp -= damage;
+      //     // --- Урон ---
+      //     const damage = Math.floor(Math.random() * 20) + 5; // от 5 до 25
+      //     ball1.hp = Math.max(0, ball1.hp - damage);
+      //     ball2.hp = Math.max(0, ball2.hp - damage);
 
-          ball1.collisionSurvived = (ball1.collisionSurvived || 0) + 1;
-          ball2.collisionSurvived = (ball2.collisionSurvived || 0) + 1;
+      //     ball1.collisionSurvived = (ball1.collisionSurvived || 0) + 1;
+      //     ball2.collisionSurvived = (ball2.collisionSurvived || 0) + 1;
 
-          checkSelectedBallSurvival(ball1);
-          checkSelectedBallSurvival(ball2);
+      //     checkSelectedBallSurvival(ball1);
+      //     checkSelectedBallSurvival(ball2);
 
-          // --- Очки ---
-          ball1.score += 1;
-          ball2.score += 1;
+      //     // --- Очки ---
+      //     ball1.score += 1;
+      //     ball2.score += 1;
 
-          if (ball1.hp <= 0) {
-            ball1.hp = 0;
-          }
-          if (ball2.hp <= 0) {
-            ball2.hp = 0;
-          }
+      //     if (ball1.hp <= 0) {
+      //       ball1.hp = 0;
+      //     }
+      //     if (ball2.hp <= 0) {
+      //       ball2.hp = 0;
+      //     }
 
-          // --- Победитель увеличивается ---
-          if (ball1.score > ball2.score) {
-            ball1.baseRadius += 1;
-          } else if (ball2.score > ball1.score) {
-            ball2.baseRadius += 1;
-          }
+      //     // --- Победитель увеличивается ---
+      //     if (ball1.score > ball2.score) {
+      //       ball1.baseRadius += 1;
+      //     } else if (ball2.score > ball1.score) {
+      //       ball2.baseRadius += 1;
+      //     }
 
-          // --- Расчёт направления отталкивания ---
-          const angle = Math.atan2(dy, dx);
-          const force = 3;
+      //     // --- Расчёт направления отталкивания ---
+      //     const angle = Math.atan2(dy, dx);
+      //     const force = 3;
 
-          ball1.dx = -Math.cos(angle) * force;
-          ball1.dy = -Math.sin(angle) * force;
-          ball2.dx = Math.cos(angle) * force;
-          ball2.dy = Math.sin(angle) * force;
+      //     ball1.dx = -Math.cos(angle) * force;
+      //     ball1.dy = -Math.sin(angle) * force;
+      //     ball2.dx = Math.cos(angle) * force;
+      //     ball2.dy = Math.sin(angle) * force;
 
-          // Установить разбегание
-          ball1.mode = "spread";
-          ball2.mode = "spread";
-          ball1.spreadTimer = 60;
-          ball2.spreadTimer = 60;
-        }
-        // const aliveBalls = balls.filter((b) => b.hp > 0);
+      //     // Установить разбегание
+      //     ball1.mode = "spread";
+      //     ball2.mode = "spread";
+      //     ball1.spreadTimer = 60;
+      //     ball2.spreadTimer = 60;
+      //   }
 
-        // const onlySelectedAlive = aliveBalls.every((b) => b.selectedByPlayer);
-        // const onlyEnemyTeamAlive = aliveBalls.every(
-        //   (b) => !b.selectedByPlayer && enemyTeamMode
-        // );
+      //   const aliveBalls = balls.filter((b) => b.hp > 0);
+      //   const onlySelectedAlive = aliveBalls.every((b) => b.selectedByPlayer);
+      //   const onlyEnemyTeamAlive = aliveBalls.every(
+      //     (b) => !b.selectedByPlayer && enemyTeamMode
+      //   );
+      //   const anySelectedAlive = aliveBalls.some((b) => b.selectedByPlayer);
 
-        // if (onlySelectedAlive && aliveBalls.length > 0) {
-        //   console.log("🎉 Победа игрока! Остались только выбранные шары.");
-        //   gameOver("win");
-        // } else if (onlyEnemyTeamAlive && aliveBalls.length > 0) {
-        //   console.log("💀 Поражение! Остались только вражеские шары.");
-        //   gameOver("lose");
-        // } else if (aliveBalls.length === 0) {
-        //   console.log("🤝 Ничья! Все шары уничтожены.");
-        //   gameOver("draw");
-        // }
-        // const aliveBalls = balls.filter((b) => b.hp > 0);
-        // const onlySelectedAlive = aliveBalls.every((b) => b.selectedByPlayer);
-        // const onlyEnemyTeamAlive = aliveBalls.every(
-        //   (b) => !b.selectedByPlayer && enemyTeamMode
-        // );
+      //   // 🔥 Новая проверка — если все выбранные игроком мертвы
+      //   if (!anySelectedAlive && playerSelectedBalls.length > 0) {
+      //     console.log("❌ Все выбранные игроком шары погибли.");
+      //     gameOver("lose");
+      //     return;
+      //   }
 
-        // // 🔥 Новая проверка: если все выбранные игроком мертвы — поражение
-        // const anySelectedAlive = aliveBalls.some((b) => b.selectedByPlayer);
-        // if (!anySelectedAlive && playerSelectedBalls.length > 0) {
-        //   console.log("❌ Все выбранные игроком шары погибли.");
-        //   gameOver("lose");
-        //   return;
-        // }
+      //   if (onlySelectedAlive && aliveBalls.length > 0) {
+      //     console.log("🎉 Победа игрока! Остались только выбранные шары.");
+      //     gameOver("win");
+      //   } else if (onlyEnemyTeamAlive && aliveBalls.length > 0) {
+      //     console.log("💀 Поражение! Остались только вражеские шары.");
+      //     gameOver("lose");
+      //   }
 
-        // if (onlySelectedAlive && aliveBalls.length > 0) {
-        //   console.log("🎉 Победа игрока! Остались только выбранные шары.");
-        //   gameOver("win");
-        // } else if (onlyEnemyTeamAlive && aliveBalls.length > 0) {
-        //   console.log("💀 Поражение! Остались только вражеские шары.");
-        //   gameOver("lose");
-        // }
-        const aliveBalls = balls.filter((b) => b.hp > 0);
-        const onlySelectedAlive = aliveBalls.every((b) => b.selectedByPlayer);
-        const onlyEnemyTeamAlive = aliveBalls.every(
-          (b) => !b.selectedByPlayer && enemyTeamMode
-        );
-        const anySelectedAlive = aliveBalls.some((b) => b.selectedByPlayer);
-
-        // 🔥 Новая проверка — если все выбранные игроком мертвы
-        if (!anySelectedAlive && playerSelectedBalls.length > 0) {
-          console.log("❌ Все выбранные игроком шары погибли.");
-          gameOver("lose");
-          return;
-        }
-
-        if (onlySelectedAlive && aliveBalls.length > 0) {
-          console.log("🎉 Победа игрока! Остались только выбранные шары.");
-          gameOver("win");
-        } else if (onlyEnemyTeamAlive && aliveBalls.length > 0) {
-          console.log("💀 Поражение! Остались только вражеские шары.");
-          gameOver("lose");
-        }
-
-        // checkGameState();
-      }
+      //   // checkGameState();
+      // }
 
       function regroupToCenter() {
         for (let ball of balls) {

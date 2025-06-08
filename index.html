@@ -602,6 +602,7 @@
           this.isDragging = false;
           this.offsetX = 0;
           this.offsetY = 0;
+          this.angryTimer = 0;
           this.visualRadius = this.baseRadius + this.score * 2;
         }
         activateAura(duration = 400) {
@@ -629,66 +630,86 @@
               return "pink";
           }
         }
-
         draw() {
-          // 🌟 Если активна аура — рисуем жёлтую окружность
-          if (this.auraTimer > 0) {
+          if (this.hp <= 0) {
+            // Рисуем гробик
+            ctx.fillStyle = "black";
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.baseRadius + 5, 0, Math.PI * 2);
-            ctx.strokeStyle = this.auraColor || "yellow";
-            ctx.lineWidth = 2;
-            ctx.stroke();
+            ctx.moveTo(this.x - 15, this.y); // верхний левый угол
+            ctx.arcTo(this.x + 15, this.y, this.x + 15, this.y + 40, 10); // верхний правый скруглённый угол
+            ctx.lineTo(this.x + 15, this.y + 40);
+            ctx.lineTo(this.x - 15, this.y + 40);
             ctx.closePath();
-          }
+            ctx.fill();
 
-          ctx.save(); // 💡 Сохраняем состояние
-          ctx.translate(this.x, this.y);
-          this.scale += (this.targetScale - this.scale) * 0.1;
-          ctx.scale(this.scale, this.scale);
-
-          // Рисуем сам шар
-          ctx.beginPath();
-          ctx.arc(0, 0, this.baseRadius, 0, Math.PI * 2);
-          ctx.fillStyle = this.selectedByPlayer ? "lightblue" : this.color;
-          ctx.fill();
-          ctx.stroke();
-          ctx.closePath();
-
-          // 💬 Эмодзи по шкале HP
-          let emoji = "🙂"; // по умолчанию
-          const hpPercent = this.hp / 200;
-          if (hpPercent >= 0.5) {
-            emoji = "🙂";
-          } else if (hpPercent >= 0.25) {
-            emoji = "😐";
-          } else {
-            emoji = "☹️";
-          }
-
-          // Рисуем эмодзи
-          ctx.font = "20px Arial";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText(emoji, 0, 0);
-
-          // 👥 "Team" над шаром
-          if (enemyTeamMode && !this.selectedByPlayer && this.hp > 0) {
-            ctx.fillStyle = "purple";
+            // Надпись RIP
+            ctx.fillStyle = "white";
             ctx.font = "12px Arial";
-            ctx.fillText("Team", 0, -this.baseRadius - 22);
+            ctx.textAlign = "center";
+            ctx.fillText("RIP", this.x, this.y + 25);
+          } else {
+            // Рисуем живой шар
+            ctx.save(); // 💡 Сохраняем состояние перед масштабом
+            ctx.translate(this.x, this.y);
+            this.scale += (this.targetScale - this.scale) * 0.1;
+            ctx.scale(this.scale, this.scale);
+
+            // Рисуем шар
+            ctx.beginPath();
+            ctx.arc(0, 0, this.baseRadius, 0, Math.PI * 2);
+            ctx.fillStyle = this.selectedByPlayer ? "lightblue" : this.color;
+            ctx.fill();
+            ctx.stroke();
+
+            // 💬 Эмодзи по шкале HP
+            let emoji = "🙂";
+            const hpPercent = this.hp / 200;
+            if (hpPercent >= 0.5) {
+              emoji = "🙂";
+            } else if (hpPercent >= 0.25) {
+              emoji = "😐";
+            } else {
+              emoji = "☹️";
+            }
+            // 🗯️ Злой смайлик при атаке
+            if (this.angryTimer > 0) emoji = "😠";
+
+            ctx.font = "20px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(emoji, 0, 0);
+
+            ctx.restore(); // 💡 Восстанавливаем масштаб и позицию
+
+            if (enemyTeamMode && !this.selectedByPlayer && this.hp > 0) {
+              ctx.fillStyle = "purple";
+              ctx.font = "12px Arial";
+              ctx.textAlign = "center";
+              ctx.fillText("Team", this.x, this.y - this.radius - 22);
+            }
+
+            // 🌟 Аура: жёлтая или фиолетовая в зависимости от ситуации
+            if (this.auraTimer > 0) {
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.radius + 5, 0, Math.PI * 2);
+              ctx.strokeStyle = this.auraColor || "yellow";
+              ctx.lineWidth = 2;
+              ctx.stroke();
+              ctx.closePath();
+            }
+
+            // Отображаем очки
+            ctx.fillStyle = "black";
+            ctx.font = "10px Arial";
+            ctx.textAlign = "center";
+            // ctx.textBaseline = "hanging";
+            ctx.fillText(this.score, this.x, this.y + 33);
           }
-
-          // 🏅 Очки
-          ctx.fillStyle = "black";
-          ctx.font = "10px Arial";
-          ctx.fillText(this.score, 0, this.baseRadius + 10);
-
-          // ❤️ HP над шаром
-          ctx.fillStyle = "black";
+          // Отрисовка HP над шариком
           ctx.font = "14px Arial";
-          ctx.fillText(`❤️${this.hp}`, 0, -this.baseRadius - 8);
-
-          ctx.restore(); // 💡 Восстанавливаем состояние
+          ctx.fillStyle = "black";
+          ctx.textAlign = "center";
+          ctx.fillText(`❤️${this.hp}`, this.x, this.y - this.radius - 8);
         }
 
         update() {
@@ -699,6 +720,11 @@
               balls.auraTimer--;
             }
           });
+
+          // Таймер злого смайлика
+          if (this.angryTimer > 0) {
+            this.angryTimer--;
+          }
 
           // if (!this.isDragging) {
           //   // Стремится к центру
@@ -1474,6 +1500,10 @@
             const damage = Math.floor(Math.random() * 20) + 5;
             ball1.hp = Math.max(0, ball1.hp - damage);
             ball2.hp = Math.max(0, ball2.hp - damage);
+
+            // Активируем злой смайлик
+            ball1.angryTimer = 30;
+            ball2.angryTimer = 30;
 
             ball1.collisionSurvived = (ball1.collisionSurvived || 0) + 1;
             ball2.collisionSurvived = (ball2.collisionSurvived || 0) + 1;
